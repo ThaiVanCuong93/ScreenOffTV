@@ -1,5 +1,7 @@
 # Screen Off TV — Android TV 息屏听歌，关闭画面保留声音
 
+[**带电视截图的分步安装指南**](docs/INSTALL.zh-CN.md) · [**AI 安装指南（英语）**](docs/AGENT-INSTALL.md)
+
 [English](README.md) · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 
 **关闭 Android TV 屏幕，同时继续听音乐或电影、视频的声音。** Screen Off TV 是通过遥控器操作的电视息屏应用，让您无需保持画面也能收听歌曲、播客或电影对白。应用依赖 **Shizuku**，支持英语、越南语和简体中文。屏幕控制及能否继续播放取决于电视固件和播放器。
@@ -34,7 +36,7 @@
 
 需要 Android TV 8.0 或更高版本，以及已运行并向 Screen Off TV 授权的 Shizuku。
 
-1. 在电视上安装并启动 Shizuku。
+1. 按照[图文指南](docs/INSTALL.zh-CN.md)安装并启动 [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku)。
 2. 下载 [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk)，并与 [SHA256SUMS](dist/SHA256SUMS) 核对 SHA-256。也可按下方说明自行构建。
 3. 安装 APK，打开 Screen Off TV，选择 **启动服务**，并在提示时授予 Shizuku 权限。
 4. 打开 **设置**，选择遥控按键、按键操作、息屏模式和语言。更改息屏模式前请先停止服务。
@@ -72,7 +74,7 @@
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | 界面、语言、设置和方向键 | 界面配置 | 6 项 Android 测试通过，包括关于页面滚动和语言切换。 |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | 音乐或电影播放 | Screen Off / Picture Off | 尚未记录具体播放器的面板控制和声音连续播放结果。 |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | 音乐或电影播放 | 关闭背光 | 尚未记录具体播放器的面板控制和声音连续播放结果。 |
-| Xiaomi MiTV-MZTU0 | 14 / API 34 | 开机自启动选项 | 不适用 | 已测试默认开启和保留已保存的关闭选择；尚未实际重启电视测试。 |
+| Xiaomi MiTV-MZTU0 | 14 / API 34 | 开机自启动选项 | 不适用 | 已测试默认开启并保留关闭选择。已重启两次；第二次使用 thedjchi/Shizuku 13.7.0，在打开应用前确认两个服务运行。 |
 
 报告其他设备时，请提供型号、Android、播放器及版本、模式，以及实际画面和声音结果。
 
@@ -100,7 +102,7 @@ Shizuku 提供普通 Android 应用无法直接使用的屏幕操作和遥控输
 
 ### 电视开机后服务会自动启动吗？
 
-开机自启动默认开启，可在设置中关闭；用户主动保存的关闭选择会被保留。Shizuku 仍需已运行并获授权。完整的电视重启测试尚未完成。
+开机自启动默认开启，可在设置中关闭；用户主动保存的关闭选择会被保留。Shizuku 仍需已运行并获授权。已在测试电视上使用 thedjchi/Shizuku 13.7.0 验证重启恢复，详见安装指南和测试记录。
 
 ### 支持哪些语言？
 

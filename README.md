@@ -1,5 +1,7 @@
 # Screen Off TV — Android TV screen off with audio on
 
+[**Installation guide with TV screenshots**](docs/INSTALL.en.md) · [**AI agent installation runbook**](docs/AGENT-INSTALL.md)
+
 [English](README.md) · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 
 **Turn off the Android TV screen while music or video audio keeps playing.** Screen Off TV is a remote-controlled picture-off app for listening to songs, podcasts or movie dialogue without keeping the picture on. It uses **Shizuku** and supports English, Vietnamese and Simplified Chinese. Screen control and continued playback depend on the TV firmware and media player.
@@ -34,7 +36,7 @@ When you only want to listen to a movie, concert, lecture or video, leave playba
 
 Requires Android TV 8.0 or later and Shizuku running with permission granted to Screen Off TV.
 
-1. Install and start Shizuku on the TV.
+1. Install and start the [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku) following the [illustrated guide](docs/INSTALL.en.md).
 2. Download [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk) and compare its SHA-256 with [SHA256SUMS](dist/SHA256SUMS). You can also build it using the instructions below.
 3. Install the APK, open Screen Off TV, select **Start service**, and grant the requested Shizuku permission.
 4. Open **Settings** to configure the remote key, press action, screen-off mode and language. Stop the service before changing the screen-off mode.
@@ -72,7 +74,7 @@ The app requires Android TV 8.0+; this minimum version is not a claim that every
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | UI, languages, settings and D-pad | UI configuration | 6 Android tests passed; includes About scrolling and language switching. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Music or movie playback | Screen Off / Picture Off | Panel behavior and uninterrupted audio have not been verified with a named player. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Music or movie playback | Backlight off | Panel behavior and uninterrupted audio have not been verified with a named player. |
-| Xiaomi MiTV-MZTU0 | 14 / API 34 | Start-on-boot preference | Not applicable | Default enabled and saved opt-out tested; a physical TV reboot has not been tested. |
+| Xiaomi MiTV-MZTU0 | 14 / API 34 | Start-on-boot preference | Not applicable | Default enabled and saved opt-out tested. Two reboots performed; on the second, both services ran before app launch with thedjchi/Shizuku 13.7.0. |
 
 To report support for another TV, include its model, Android version, player/version, mode and the observed screen/audio result.
 
@@ -100,7 +102,7 @@ Not necessarily. Player behavior and TV firmware can pause playback or reject sc
 
 ### Does the service start automatically after the TV boots?
 
-Start on boot defaults to enabled. You can turn it off in Settings, and an explicitly saved opt-out is preserved. Shizuku still needs to be running and authorized. A full reboot test remains pending.
+Start on boot defaults to enabled. You can turn it off in Settings, and an explicitly saved opt-out is preserved. Shizuku still needs to be running and authorized. Boot recovery was verified on the test TV with thedjchi/Shizuku 13.7.0; see the installation guide and test evidence.
 
 ### Which languages are available?
 

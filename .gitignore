@@ -22,9 +22,6 @@ captures/
 *.jks
 *.keystore
 
-# Keep unfinished installation documents local until their next publication
-/docs/
-
 # Publish only the current tested APK and its checksum
 !/dist/Screen-Off-TV-0.1.2.apk
 !/dist/SHA256SUMS

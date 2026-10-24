@@ -1,5 +1,7 @@
 # Screen Off TV — Tắt màn hình Android TV vẫn nghe nhạc và âm thanh phim
 
+[**Hướng dẫn cài đặt từng bước có ảnh**](docs/INSTALL.md) · [**Hướng dẫn cài đặt cho AI agent**](docs/AGENT-INSTALL.md)
+
 [English](README.md) · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 
 **Tắt màn hình tivi vẫn nghe nhạc hoặc tiếp tục nghe âm thanh phim/video.** Screen Off TV điều khiển chế độ tắt hình bằng remote, giúp bạn nghe bài hát, podcast hay lời thoại mà không cần giữ hình ảnh trên màn hình. Ứng dụng dùng **Shizuku**, hỗ trợ Việt–Anh–Trung giản thể. Khả năng tắt panel và tiếp tục phát phụ thuộc firmware TV và trình phát.
@@ -34,7 +36,7 @@ Khi chỉ muốn nghe lời thoại phim, buổi hòa nhạc, bài giảng hoặ
 
 Yêu cầu Android TV 8.0 trở lên và Shizuku đang chạy, đã cấp quyền cho Screen Off TV.
 
-1. Cài và khởi động Shizuku trên TV.
+1. Cài và khởi động [thedjchi/Shizuku dành cho TV](https://github.com/thedjchi/Shizuku) theo [hướng dẫn có ảnh](docs/INSTALL.md).
 2. Tải [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk) và đối chiếu SHA-256 với [SHA256SUMS](dist/SHA256SUMS). Bạn cũng có thể tự build theo hướng dẫn bên dưới.
 3. Cài APK, mở Screen Off TV, chọn **Bật dịch vụ** và cấp quyền Shizuku khi được hỏi.
 4. Vào **Cài đặt** để chọn phím remote, thao tác, chế độ tắt màn hình và ngôn ngữ. Dừng dịch vụ trước khi đổi chế độ tắt màn hình.
@@ -72,7 +74,7 @@ Yêu cầu Android TV 8.0 trở lên không có nghĩa là mọi TV đều tươ
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Giao diện, ngôn ngữ, cấu hình và D-pad | Cấu hình giao diện | 6 kiểm thử Android qua, gồm cuộn Giới thiệu và đổi ngôn ngữ. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Phát nhạc hoặc phim | Screen Off / Picture Off | Chưa xác minh panel và âm thanh liên tục với trình phát được ghi tên cụ thể. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Phát nhạc hoặc phim | Tắt đèn nền | Chưa xác minh panel và âm thanh liên tục với trình phát được ghi tên cụ thể. |
-| Xiaomi MiTV-MZTU0 | 14 / API 34 | Tùy chọn tự khởi động | Không áp dụng | Đã kiểm tra mặc định bật và giữ lựa chọn tắt; chưa thử reboot TV thực tế. |
+| Xiaomi MiTV-MZTU0 | 14 / API 34 | Tùy chọn tự khởi động | Không áp dụng | Đã kiểm tra mặc định bật và giữ lựa chọn tắt. Đã reboot hai lần; lần 2 cả hai dịch vụ chạy trước khi mở app với thedjchi/Shizuku 13.7.0. |
 
 Khi báo thiết bị khác, ghi rõ model, Android, trình phát/phiên bản, chế độ và kết quả quan sát về hình/âm thanh.
 
@@ -100,7 +102,7 @@ Không chắc chắn. Trình phát hoặc firmware TV có thể tạm dừng n�
 
 ### Dịch vụ có tự chạy sau khi bật TV không?
 
-Tự khởi động mặc định bật. Bạn có thể tắt trong Cài đặt; lựa chọn chủ động tắt đã lưu sẽ được giữ. Shizuku vẫn phải chạy và được cấp quyền. Chưa kiểm tra bằng lần reboot TV hoàn chỉnh.
+Tự khởi động mặc định bật. Bạn có thể tắt trong Cài đặt; lựa chọn chủ động tắt đã lưu sẽ được giữ. Shizuku vẫn phải chạy và được cấp quyền. Đã xác minh phục hồi sau reboot trên TV thử với thedjchi/Shizuku 13.7.0; xem hướng dẫn cài đặt và kết quả kiểm tra.
 
 ### Ứng dụng có những ngôn ngữ nào?
 

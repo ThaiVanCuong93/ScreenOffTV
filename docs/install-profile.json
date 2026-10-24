@@ -1,0 +1,93 @@
+{
+  "schema_version": 2,
+  "human_guide": "docs/INSTALL.md",
+  "agent_guide": "docs/AGENT-INSTALL.md",
+  "defaults": {
+    "operation": "update_existing",
+    "clean_capture_requires_explicit_request": true,
+    "language": "preserve existing choice; Vietnamese for a fresh install unless requested otherwise",
+    "remote_key": "Mute",
+    "press_action": "Double",
+    "start_on_boot": true,
+    "screen_mode": "ShizukuPowerOffScreen",
+    "optional_key_change": "physical RED button; learn and confirm actual event code; never change the app default"
+  },
+  "device": {
+    "owner_reported_marketing_name": "Xiaomi TV A Pro 55-inch (2026)",
+    "observed_model": "MiTV-MZTU0",
+    "observed_android": "14",
+    "observed_api": 34,
+    "stability_evidence": "Owner reports stable operation. Fresh installation and two reboots recorded on 2026-10-25; second reboot verified both services before app launch. Named-player and long-duration playback unverified."
+  },
+  "packages": {
+    "screen_off": "com.thaivancuong93.screenofftv",
+    "shizuku": "moe.shizuku.privileged.api"
+  },
+  "screen_off": {
+    "version": "0.1.2",
+    "version_code": 2,
+    "local_apk": "dist/Screen-Off-TV-0.1.2.apk",
+    "sha256": "96860596bfaec0f69f3f98f5f73f2b96d6f0fea57abe067cbed5d58ff5244fd4",
+    "signing": "Android debug certificate",
+    "public_download_verified": true,
+    "certificate_sha256": "48d7e1550e1606ee121761b9d8e151c57cf558bf87b1862cd1eae69444b586a9",
+    "download_url": "https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk",
+    "browser_url": "https://github.com/ThaiVanCuong93/ScreenOffTV/blob/main/dist/Screen-Off-TV-0.1.2.apk"
+  },
+  "shizuku": {
+    "tag": "v13.7.0-thedjchi",
+    "name": "shizuku-v13.7.0-thedjchi.apk",
+    "url": "https://github.com/thedjchi/Shizuku/releases/download/v13.7.0-thedjchi/shizuku-v13.7.0-thedjchi.apk",
+    "size": 3653986,
+    "sha256": "6ea6dee65d5ddc626b6b75b2c2f67f8cc547fa47d7b437e6892639c37eaffe43",
+    "download_page": "https://github.com/thedjchi/Shizuku",
+    "release_page": "https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi",
+    "non_root_boot": {
+      "minimum_android_api": 30,
+      "requirements": [
+        "Wireless Debugging startup mode and successful pairing of Shizuku own key",
+        "Enable Start on boot in fork settings",
+        "Wi-Fi connection available after reboot",
+        "Grant WRITE_SECURE_SETTINGS if requested by installed fork setup",
+        "Actual reboot test: Shizuku running AND Screen Off TV service ready"
+      ],
+      "permission": "android.permission.WRITE_SECURE_SETTINGS",
+      "verified_on_target_tv": true,
+      "startup_delay": "May take several minutes; Screen Off TV currently waits about 30 seconds; test delayed startup explicitly",
+      "pc_mode": "PC-only startup does not provide automatic boot recovery"
+    },
+    "root_boot": "Only on a device already rooted; do not root as part of installation",
+    "package": "moe.shizuku.privileged.api",
+    "version_code": 1361,
+    "certificate_sha256": "947e81ed49d6cde4006bd64b94ab69e63f50074ce01451d1bf30acb14e591f37",
+    "distribution": "thedjchi/Shizuku TV-compatible fork; explicitly selected by project owner",
+    "verified_on_target_tv": true,
+    "owner_reports_using_fork": true,
+    "maintenance_status": "Maintainer currently pauses maintenance; recheck release status before future updates",
+    "migration_from_original": "Different signing certificate: uninstall original only within authorized migration scope, forget its wireless pairing, install fork and pair/authorize again; preserve an existing verified fork during ordinary updates"
+  },
+  "completion_checks": [
+    "exact package IDs and versions",
+    "Shizuku running and authorized",
+    "Screen Off TV ready",
+    "app start-on-boot setting on",
+    "Mute default unchanged unless RED explicitly requested",
+    "if RED walkthrough requested: actual physical event confirmed",
+    "if panel test requested: physical screen restored and actual audio observation recorded",
+    "real reboot checked before claiming automatic recovery"
+  ],
+  "human_guides": {
+    "vi": "docs/INSTALL.md",
+    "en": "docs/INSTALL.en.md",
+    "zh-CN": "docs/INSTALL.zh-CN.md"
+  },
+  "verification": {
+    "date": "2026-10-25",
+    "reboots_performed": 2,
+    "second_reboot_services_verified_before_app_launch": true,
+    "shizuku_server_running": true,
+    "screen_off_service_start_reason": "BOOT_COMPLETED",
+    "named_player_panel_audio_tested": false,
+    "physical_red_key_tested": false
+  }
+}
