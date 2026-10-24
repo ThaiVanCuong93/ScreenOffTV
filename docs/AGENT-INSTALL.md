@@ -1,110 +1,121 @@
-# Screen Off TV installation runbook for AI agents
+# Hướng dẫn AI cài Screen Off TV trên TV
 
-[Illustrated Vietnamese manual](INSTALL.md) · [English manual](INSTALL.en.md) · [简体中文](INSTALL.zh-CN.md) · [Artifact profile](install-profile.json) · [Test evidence](TESTING.md)
+Dành cho Codex, Gemini, ChatGPT và agent có công cụ điều khiển thiết bị. Đọc [install-profile.json](install-profile.json) để lấy đúng phiên bản, link APK, checksum và chữ ký. Xem [hướng dẫn có ảnh](INSTALL.md) khi cần đối chiếu giao diện.
 
-For Codex, Gemini, ChatGPT or another agent with authorized device tools. Read the profile first. Use this workflow only within the installation and device-access scope requested by the human. A chat without device tools must guide the human and report that limitation.
+**Thứ tự thực hiện:** kết nối TV → chuẩn bị APK → cài và chạy Shizuku → bật Shizuku tự chạy → cài và cấp quyền Screen Off TV → kiểm tra cấu hình → kiểm tra kết quả.
 
-## 1. Resolve scope and defaults
+## Cấu hình sử dụng
 
-Use the single human-authorized TV, verify its model and Android version. Resolve an ambiguous target before mutation. Do not ask again for choices already provided by the user/profile.
-
-| Item | Default |
+| Mục | Giá trị |
 |---|---|
-| Operation | Install or update the selected apps, preserving existing settings. |
-| Screen Off TV | 0.1.2 / versionCode 2; `com.thaivancuong93.screenofftv` |
-| Shizuku | Owner-selected `thedjchi/Shizuku`, pinned 13.7.0-thedjchi / versionCode 1361 |
-| Language | Preserve existing; Vietnamese for a fresh install unless requested otherwise. |
-| Shortcut | Mute, double press; RED only as an optional requested walkthrough. |
-| Display mode | Screen Off / Picture Off; stop service before changing mode. |
-| Start on boot | Enable both Shizuku and Screen Off TV when setting up automatic startup. Preserve an existing app opt-out on ordinary updates. |
+| Shizuku | Bản TV `thedjchi/Shizuku`, 13.7.0-thedjchi |
+| Screen Off TV | 0.1.2, package `com.thaivancuong93.screenofftv` |
+| Ngôn ngữ | Giữ lựa chọn hiện có; cài lần đầu dùng tiếng Việt nếu người dùng không yêu cầu khác. |
+| Phím và thao tác | Mute, nhấn hai lần. |
+| Chế độ tắt hình | Screen Off / Picture Off. |
+| Tự khởi động | Bật trong cả hai app khi thiết lập mới. Cập nhật thông thường giữ lựa chọn cũ của người dùng. |
 
-## 2. Preflight and integrity
+Chỉ thao tác trên TV người dùng yêu cầu. Không hỏi lại những lựa chọn đã có trong yêu cầu hoặc bảng trên. Nếu thiếu quyền kết nối, có nhiều TV chưa xác định được đích, hoặc cần nhấn nút remote thật, hỏi đúng thông tin/thao tác còn thiếu.
 
-1. Discover ADB via PATH or the installed Android SDK. Run `adb devices -l`, then select the authorized serial explicitly in every command. Read manufacturer/model, Android release and API with `getprop`.
-2. Record installed package/version/certificate and current settings. Do not publish network addresses, Wi-Fi names, pairing codes, ADB keys or private device logs.
-3. Download **both** artifacts from exact profile URLs before installation. Prefer a local APK only if its checksum matches. Reject an HTML/error response saved as APK.
-4. Verify SHA-256, package, versionCode and signing certificate against the profile using `sha256sum`, `aapt`/`apkanalyzer` and `apksigner verify --print-certs` when available. Recheck installed metadata afterwards. The Screen Off TV APK uses an Android debug key, not a private production key.
-5. The Shizuku fork has a different certificate from RikkaApps, despite sharing `moe.shizuku.privileged.api`. Do not replace it with the original app or another fork. An existing verified fork should be preserved during ordinary updates.
+## 1. Kết nối và xác định TV
+
+1. Tìm ADB trong PATH hoặc Android SDK đã cài. Chạy `adb devices -l`.
+2. Chọn đúng TV, lưu serial vào biến `tv_serial`; dùng `adb -s "$tv_serial"` cho mọi lệnh tiếp theo.
+3. Đọc model và Android để ghi vào kết quả:
 
 ```bash
-adb devices -l
 adb -s "$tv_serial" shell getprop ro.product.model
 adb -s "$tv_serial" shell getprop ro.build.version.release
 adb -s "$tv_serial" shell getprop ro.build.version.sdk
-sha256sum "$shizuku_apk" "$screen_apk"
 ```
 
-`tv_serial`, `shizuku_apk` and `screen_apk` are task-local variables obtained from actual discovery, never guessed values. Use safe quoting.
+Nếu chưa kết nối được, hướng dẫn người dùng theo [bước bật chế độ nhà phát triển](INSTALL.md). Khi TV có Wireless debugging, dùng địa chỉ/cổng hiện trên TV: `adb pair TV_IP:PAIRING_PORT`, sau đó `adb connect TV_IP:CONNECTION_PORT`. Hai cổng khác nhau; không mặc định cổng 5555. Người dùng xác nhận kết nối máy tính trên TV nếu được hỏi.
 
-## 3. Establish device access
+**Chuyển bước khi:** `adb devices -l` báo đúng TV ở trạng thái `device`.
 
-For manual navigation and menu images follow [steps 2–4](INSTALL.en.md). Developer options are usually enabled by selecting Android TV OS Build about seven times. Enable USB debugging and Wireless debugging where exposed. Do not unlock the bootloader or root the TV.
+## 2. Chuẩn bị APK
 
-Use an existing authorized connection. If pairing a workstation, use the live TV pairing/connection ports separately:
+1. Đọc phiên bản hai app đang có trên TV. Nếu đã đúng phiên bản và chữ ký trong profile, giữ nguyên app đó, chuyển sang kiểm tra cấu hình.
+2. Với app cần cài/cập nhật, lấy APK từ đúng URL trong profile hoặc dùng tệp cục bộ có checksum khớp. Không tự thay fork Shizuku hoặc chọn bản beta/latest khác.
+3. Kiểm tra SHA-256; kiểm tra package, versionCode và chữ ký bằng `aapt`/`apkanalyzer`, `apksigner` nếu công cụ có sẵn. Không coi trang HTML là APK.
+4. Lưu đường dẫn tệp đã kiểm tra vào `shizuku_apk` và `screen_apk`. Nếu chữ ký app đang cài không khớp, dừng cập nhật app đó và báo cụ thể xung đột.
+
+**Chuyển bước khi:** APK cần dùng đã sẵn sàng và khớp profile. Screen Off TV hiện ký bằng Android debug key; ghi đúng đây là bản thử nghiệm.
+
+## 3. Cài và khởi động Shizuku
+
+Nếu cần cài/cập nhật, dùng APK đã kiểm tra:
 
 ```bash
-adb pair TV_IP:PAIRING_PORT
-adb connect TV_IP:CONNECTION_PORT
+adb -s "$tv_serial" install -r "$shizuku_apk"
 ```
 
-Allow the human to enter or approve device authorization when required. Do not assume port 5555 or phone-specific menu paths. Pairing the workstation does **not** pair Shizuku's own key.
+Mở Shizuku từ launcher hoặc **Cài đặt TV → Ứng dụng → Shizuku → Mở**. Nếu Shizuku đã chạy, giữ trạng thái đó và kiểm tra cấu hình tự chạy ở bước 4. Nếu chưa chạy:
 
-## 4. Install or update
+1. Chọn **Bắt đầu thông qua Gỡ lỗi không dây → Ghép nối**.
+2. Chọn **Tùy chọn nhà phát triển → Gỡ lỗi qua Wi-Fi → Ghép nối thiết bị bằng mã ghép nối**.
+3. Giữ màn hình mã để Shizuku tự nhận. Quay lại Shizuku, chọn **Bắt đầu** nếu cần.
+4. Xác nhận app báo **Shizuku đang chạy**.
 
-For an existing same-certificate app use `adb -s "$tv_serial" install -r "$apk"` to preserve settings. If the certificate differs, stop that installation and report the installed and requested distributions; do not bypass the conflict.
+![Vào ghép đôi từ Shizuku](images/install/11-shizuku-pairing.png)
 
-Install Shizuku first, then open its actual launcher activity or TV Settings → Apps → Shizuku → Open:
+Trong lúc Shizuku tự nhận mã, dùng ảnh màn hình và phím điều hướng; tránh `uiautomator dump` hoặc phiên UiAutomation khác vì có thể làm gián đoạn. Nếu cần, nhờ người dùng thực hiện đúng chuỗi trên bằng remote. Ghép đôi máy tính bằng `adb pair` không thay thế khóa ghép đôi của Shizuku.
 
-```bash
-adb -s "$tv_serial" install "$shizuku_apk"
-```
+Nếu TV không thực hiện được luồng không dây, dùng **Xem lệnh** trong Shizuku và chạy đúng lệnh khởi động app hiển thị qua ADB. Không đoán đường dẫn. Ghi lại đã dùng cách PC; riêng cách này chưa chứng minh tự chạy sau reboot.
 
-For the manual USB route use the TV's actual file manager/system installer; enable Install unknown apps only for that installer if required. Do not present an ADB install as screenshots of the USB installer. Do not disable system protection to bypass an unexplained warning.
+**Chuyển bước khi:** Shizuku đang chạy. Muốn xác nhận tự chạy không dây, phải kiểm tra thêm ở bước 7.
 
-![Shizuku after a fresh ADB installation, not the system installer](images/install/10-shizuku-install.png)
+## 4. Bật Shizuku tự khởi động
 
-## 5. Pair and start Shizuku
-
-1. In Shizuku select Wireless debugging → Pairing → Developer options → Wireless debugging → Pair device with pairing code. Let Shizuku detect its own code; do not call workstation `adb pair` a substitute.
-2. **Avoid `uiautomator dump` or a competing UiAutomation session during automatic pairing.** On this TV the screen returned to Shizuku while such tooling was used. Navigate via screenshots and remote keys instead; the human may need to complete that sequence physically.
-3. After pairing, select Start if needed and verify the UI reports running. A return to the app or an old `shizuku` entry alone is not proof of a fresh successful pair. Verify wireless start or boot recovery.
-4. For PC fallback read **View command** in the installed app and run exactly that starter command via the authorized device. Do not hardcode an old APK/lib path. PC startup is a fallback, not proof of wireless boot recovery.
-5. App version 13.7.0-thedjchi can display server version 13.6 on its home page. Use package metadata/About for app version.
-
-![Pairing route shown by the TV fork](images/install/11-shizuku-pairing.png)
-
-## 6. Configure both boot switches
-
-In the fork's Settings enable **Start on boot**. If its setup requests the supporting permission and auto-start setup is authorized:
+Trong **Shizuku → Cài đặt**, bật **Bắt đầu khi khởi động / Start on boot**. Nếu đã bật thì giữ nguyên. Nếu app yêu cầu quyền hỗ trợ, cấp qua kết nối ADB đã được cho phép:
 
 ```bash
 adb -s "$tv_serial" shell pm grant moe.shizuku.privileged.api android.permission.WRITE_SECURE_SETTINGS
 ```
 
-Check the result and permission state. Do not grant unrelated privileges or alter debugging retention settings. Wi-Fi must become available. The fork may take minutes; Screen Off TV currently waits around 30 seconds, so test delayed startup and report a timeout accurately. TCP mode and Watchdog are not requirements; the test TV had TCP enabled and Watchdog disabled. Preserve existing networking choices unless the task requires a change. Use firmware-specific background permissions only if actually present.
+Kiểm tra lệnh thành công và quyền được cấp. Giữ Wi-Fi sẵn sàng sau boot. Chỉ thiết lập quyền chạy nền của firmware nếu TV thực sự có mục đó. Giữ nguyên TCP/Watchdog; chúng không phải bước bắt buộc của hướng dẫn này.
 
-![Fork Start on boot enabled](images/install/13-shizuku-boot.png)
+![Shizuku: công tắc tự chạy đã bật](images/install/13-shizuku-boot.png)
 
-Install Screen Off TV, open it, choose Start service and authorize **Allow all the time** in Shizuku. Handle its notification permission only if shown. Verify Ready, Shizuku running and permission granted.
+**Chuyển bước khi:** công tắc tự chạy đã bật; kết quả reboot để kiểm tra riêng ở bước 7.
+
+## 5. Cài và cấp quyền Screen Off TV
+
+Nếu cần cài/cập nhật:
 
 ```bash
-adb -s "$tv_serial" install "$screen_apk"
+adb -s "$tv_serial" install -r "$screen_apk"
+```
+
+Mở ứng dụng:
+
+```bash
 adb -s "$tv_serial" shell am start -W -n com.thaivancuong93.screenofftv/.MainActivity
 ```
 
-![Actual Shizuku authorization prompt](images/install/16-shizuku-authorization.png)
+1. Chọn **Bật dịch vụ** nếu chưa chạy.
+2. Nếu Shizuku hỏi quyền, chọn **Cho phép mọi lúc**. Chấp nhận quyền thông báo của Screen Off TV nếu TV có hỏi.
+3. Chờ **Sẵn sàng điều khiển**, kèm **Shizuku: đang chạy · đã cấp quyền**.
 
-In Screen Off TV Settings verify Mute, double press, Screen Off / Picture Off and Start when TV boots enabled for a fresh setup. Do not edit private preference files to fake readiness.
+![Chọn Cho phép mọi lúc](images/install/16-shizuku-authorization.png)
 
-![Ready with app boot switch enabled](images/install/19-screen-off-boot.png)
+Nếu chưa sẵn sàng, kiểm tra Shizuku đang chạy và quyền cho app, sau đó kiểm tra kết nối hoặc bật lại dịch vụ. Không lặp lại việc cài APK để xử lý lỗi kết nối.
 
-## 7. Optional physical RED walkthrough
+**Chuyển bước khi:** Screen Off TV sẵn sàng điều khiển.
 
-With service running: Settings → Remote key → Learn another remote key → human presses the actual RED button once → read detected code → Confirm this key → keep double press → Test remote key with one press. Never guess a Linux/vendor code from Android KEYCODE_PROG_RED. Injected ADB key events may not reach the hardware capture path and do not verify the physical button. Restore Mute if the walkthrough was only a demonstration. Ask for the specific physical press when needed, not generic setup choices.
+## 6. Kiểm tra cấu hình Screen Off TV
 
-## 8. Reboot and playback verification
+Mở **Cài đặt** và đối chiếu bảng cấu hình đầu tài liệu: Mute, nhấn hai lần, Screen Off / Picture Off, tự khởi động bật khi thiết lập mới. Giữ cấu hình đã lưu trong cập nhật thông thường, trừ khi người dùng yêu cầu đổi. Dừng dịch vụ trước khi đổi chế độ tắt hình, sau đó bật lại và kiểm tra sẵn sàng.
 
-Reboot only within the requested installation/test scope and with a reconnection path ready. Record whether services exist **before launching either app or pressing Start**:
+![Cấu hình và trạng thái sẵn sàng](images/install/19-screen-off-boot.png)
+
+**Hoàn thành phần cài đặt khi:** phiên bản đúng, Shizuku chạy, app được cấp quyền và sẵn sàng, cấu hình đúng yêu cầu. Chưa thử reboot thì báo tự chạy đã cấu hình nhưng chưa kiểm chứng.
+
+## 7. Kiểm tra tự chạy khi yêu cầu có thử reboot
+
+1. Chuẩn bị cách kết nối lại TV, rồi reboot trong phạm vi người dùng đã yêu cầu.
+2. Khi TV và mạng sẵn sàng, kết nối lại ADB. **Chưa mở hai app, chưa bấm Bật dịch vụ, chưa chạy lệnh starter PC.**
+3. Kiểm tra:
 
 ```bash
 adb -s "$tv_serial" shell getprop sys.boot_completed
@@ -112,26 +123,21 @@ adb -s "$tv_serial" shell pidof shizuku_server
 adb -s "$tv_serial" shell dumpsys activity services com.thaivancuong93.screenofftv
 ```
 
-Inspect for a foreground ScreenOffTVService and `BOOT_COMPLETED` origin. Allow for Wi-Fi/startup delay. Only then open the UI and capture Ready. Do not mark the chain successful merely because the switches are on. If Shizuku starts late and the client times out, recover the service after Shizuku is ready and record automatic startup as failed for that run.
+4. Xác nhận boot hoàn tất, Shizuku có tiến trình và ScreenOffTVService chạy foreground; đối chiếu nguồn khởi động `BOOT_COMPLETED`. Sau đó mới mở app chụp trạng thái sẵn sàng.
+5. Nếu Shizuku lên muộn và app hết thời gian chờ, bật lại dịch vụ để phục hồi, nhưng ghi lần thử tự chạy chưa đạt. Shizuku có thể chờ Wi-Fi vài phút, còn Screen Off TV hiện chờ khoảng 30 giây.
 
-The 2026-10-25 session performed two reboots. In the second, both services were verified before app launch; Android recorded BOOT_COMPLETED and createdFromFg=false. This is device-specific evidence, not a promise about every firmware.
+**Đạt khi:** cả hai dịch vụ tự chạy trước thao tác mở app/khởi động thủ công, rồi giao diện xác nhận sẵn sàng. Công tắc bật đơn thuần không đủ chứng minh.
 
-![Ready after the second reboot, opened only after service inspection](images/install/25-reboot-second-ready.png)
+## Chỉ làm thêm khi được yêu cầu
 
-For playback, record player/version and content, establish audible playback, use the configured shortcut to turn the panel off and back on, and verify continued audio and playback state. Observe the physical panel/camera: an ADB screenshot alone cannot prove panel power. Do not invent human observations. This playback/physical RED test remains unverified in the recorded session.
+- **RED:** bật dịch vụ → Cài đặt → Phím điều khiển → Nhận một phím khác → nhấn RED thật → đọc mã nhận được → Xác nhận → kiểm tra một lần nhấn. Không đoán mã hoặc coi phím ADB giả là bằng chứng phần cứng. Nếu chỉ minh họa, trả về Mute sau khi chụp.
+- **Nhạc/phim:** ghi trình phát/phiên bản, xác nhận có tiếng, thử phím tắt tắt/bật hình và kiểm tra âm thanh liên tục. Cần quan sát panel thật hoặc camera; ảnh ADB không chứng minh panel đã tắt. Chuẩn bị cách khôi phục hình trước khi thử.
+- **USB:** nếu người dùng muốn tự cài hoặc chụp trình cài hệ thống, làm theo [hướng dẫn có ảnh](INSTALL.md). Không dùng ảnh mở app để thay cho ảnh trình cài APK.
 
-## 9. Record results incrementally
+## Ghi kết quả sau mỗi bước
 
-After each step update the installation record/profile with actual status and evidence. Keep screenshots reviewed and free of active pairing secrets/private identifiers. Example capture:
+Cập nhật tiến độ và ảnh thật vào dự án nếu người dùng yêu cầu ghi tài liệu. Không đưa mã ghép đôi, địa chỉ mạng, khóa ADB hoặc dữ liệu riêng lên GitHub. Nếu không có công cụ điều khiển TV, nói rõ chỉ đang hướng dẫn người dùng.
 
-```bash
-adb -s "$tv_serial" exec-out screencap -p > STEP.png
-```
+Kết thúc, báo ngắn gọn: phiên bản đã cài; Shizuku và Screen Off TV có sẵn sàng không; phím/ngôn ngữ; hai công tắc tự chạy; reboot đã thử hay chưa; ảnh đã lưu; bước còn vướng. Không dùng kết quả thử cũ làm kết quả của lần cài hiện tại.
 
-Return installed versions, actions taken, Shizuku and app readiness, both boot settings, actual reboot result, shortcut and language, screenshots and remaining blockers. No mockups, stale screenshots or command-output images as substitutes for missing installer screens. Current reproducible evidence is in [TESTING.md](TESTING.md); do not recreate planning documents for completed work.
-
-## Prompt for a human to reuse
-
-> Read docs/AGENT-INSTALL.md and docs/install-profile.json. Install or update Screen Off TV and the selected thedjchi/Shizuku fork on my authorized TV. Preserve existing settings. For a fresh setup use Vietnamese, Mute double press, Screen Off / Picture Off and both boot switches enabled. Record each completed step and real screenshots. Complete pairing, verify boot services before opening apps when reboot testing is requested, and report unverified playback or physical RED steps accurately. Ask only for missing device authorization, an ambiguous target or a required physical action.
-
-Sources: [fork release](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi), [setup](https://github.com/thedjchi/Shizuku/wiki/Setup), [features](https://github.com/thedjchi/Shizuku/wiki/Features), [Google ADB](https://developer.android.com/tools/adb).
+[Kết quả kiểm tra đã ghi nhận](TESTING.md) · [Nguồn Shizuku](https://github.com/thedjchi/Shizuku) · [Hướng dẫn của fork](https://github.com/thedjchi/Shizuku/wiki/Setup)
