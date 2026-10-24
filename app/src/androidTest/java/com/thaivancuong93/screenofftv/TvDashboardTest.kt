@@ -1,0 +1,77 @@
+package com.thaivancuong93.screenofftv
+
+import android.content.Context
+import androidx.compose.runtime.*
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.core.app.ApplicationProvider
+import com.thaivancuong93.screenofftv.i18n.AppLanguage
+import com.thaivancuong93.screenofftv.settings.test.FakeSettingsRepository
+import com.thaivancuong93.screenofftv.tv.TvDashboard
+import com.thaivancuong93.screenofftv.ui.theme.ScreenOffTVTheme
+import org.junit.Rule
+import org.junit.Test
+
+@OptIn(ExperimentalTestApi::class)
+class TvDashboardTest {
+    @get:Rule val compose = createComposeRule()
+
+    private fun showDashboard() {
+        val host = ApplicationProvider.getApplicationContext<Context>()
+        val settings = FakeSettingsRepository()
+        compose.setContent {
+            var language by remember { mutableStateOf("en") }
+            val context = remember(language) { AppLanguage.wrap(host, language) }
+            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides context.resources.configuration) {
+                ScreenOffTVTheme(darkTheme = true, dynamicColor = false) {
+                    TvDashboard(
+                        settings = settings, shizukuReady = false, shizukuGranted = false, message = null,
+                        onStart = {}, onStop = {}, onScreenOff = {}, onOpenShizuku = {}, onRefresh = {},
+                        language = language, onLanguageChange = { language = it },
+                    )
+                }
+            }
+        }
+    }
+
+    @Test fun aboutScrollsWithRemoteAndClosesWithOk() {
+        showDashboard()
+        compose.onNodeWithText("SCREEN OFF TV").assertDoesNotExist()
+        compose.onNodeWithText("Settings", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("About", useUnmergedTree = true).performScrollTo().performClick()
+        val version = compose.onNodeWithText("Version ${BuildConfig.VERSION_NAME}")
+        version.assertIsDisplayed()
+        val close = compose.onNodeWithText("Close")
+        close.assertIsFocused()
+        repeat(30) { close.performKeyInput { pressKey(Key.DirectionDown) } }
+        version.assertIsNotDisplayed()
+        compose.onNodeWithText("↑ ↓  Scroll     OK / Back  Close").assertIsDisplayed()
+        repeat(30) { close.performKeyInput { pressKey(Key.DirectionUp) } }
+        version.assertIsDisplayed()
+        close.performKeyInput { pressKey(Key.DirectionCenter) }
+        version.assertDoesNotExist()
+    }
+
+    @Test fun languageSwitchesLiveAndPreservesScreenMode() {
+        showDashboard()
+        compose.onNodeWithText("Settings", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Screen-off mode", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Backlight off / Brightness = -1", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Language", useUnmergedTree = true).performScrollTo().performClick()
+        compose.onNodeWithText("Tiếng Việt", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Cài đặt TV").assertIsDisplayed()
+        compose.onNodeWithText("Chế độ tắt màn hình", useUnmergedTree = true).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Đang dùng: Tắt đèn nền (Backlight / Brightness = -1).").assertIsDisplayed()
+        compose.onNodeWithText("Ngôn ngữ / Language", useUnmergedTree = true).performScrollTo().performClick()
+        compose.onNodeWithText("简体中文", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("电视设置").assertIsDisplayed()
+        compose.onNodeWithText("当前：关闭背光（亮度 = -1）。").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("语言 / Language", useUnmergedTree = true).performScrollTo().performClick()
+        compose.onNodeWithText("English", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("TV settings").assertIsDisplayed()
+        compose.onNodeWithText("Current: Backlight off / Brightness = -1.").performScrollTo().assertIsDisplayed()
+    }
+}
