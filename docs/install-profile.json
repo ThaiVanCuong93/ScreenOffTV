@@ -4,7 +4,6 @@
   "agent_guide": "docs/AGENT-INSTALL.md",
   "defaults": {
     "operation": "update_existing",
-    "clean_capture_requires_explicit_request": true,
     "language": "preserve existing choice; Vietnamese for a fresh install unless requested otherwise",
     "remote_key": "Mute",
     "press_action": "Double",
@@ -63,8 +62,7 @@
     "distribution": "thedjchi/Shizuku TV-compatible fork; explicitly selected by project owner",
     "verified_on_target_tv": true,
     "owner_reports_using_fork": true,
-    "maintenance_status": "Maintainer currently pauses maintenance; recheck release status before future updates",
-    "migration_from_original": "Different signing certificate: uninstall original only within authorized migration scope, forget its wireless pairing, install fork and pair/authorize again; preserve an existing verified fork during ordinary updates"
+    "maintenance_status": "Maintainer currently pauses maintenance; recheck release status before future updates"
   },
   "completion_checks": [
     "exact package IDs and versions",

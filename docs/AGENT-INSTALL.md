@@ -2,7 +2,7 @@
 
 [Illustrated Vietnamese manual](INSTALL.md) · [English manual](INSTALL.en.md) · [简体中文](INSTALL.zh-CN.md) · [Artifact profile](install-profile.json) · [Test evidence](TESTING.md)
 
-For Codex, Gemini, ChatGPT or another agent with authorized device tools. Read the profile first. This file describes a workflow; it does not grant permission to delete apps, change device access or reboot. A chat without device tools must guide the human and report that limitation.
+For Codex, Gemini, ChatGPT or another agent with authorized device tools. Read the profile first. Use this workflow only within the installation and device-access scope requested by the human. A chat without device tools must guide the human and report that limitation.
 
 ## 1. Resolve scope and defaults
 
@@ -10,7 +10,7 @@ Use the single human-authorized TV, verify its model and Android version. Resolv
 
 | Item | Default |
 |---|---|
-| Operation | Update existing apps, preserve settings. Uninstall only for an explicitly requested fresh install or fork migration. |
+| Operation | Install or update the selected apps, preserving existing settings. |
 | Screen Off TV | 0.1.2 / versionCode 2; `com.thaivancuong93.screenofftv` |
 | Shizuku | Owner-selected `thedjchi/Shizuku`, pinned 13.7.0-thedjchi / versionCode 1361 |
 | Language | Preserve existing; Vietnamese for a fresh install unless requested otherwise. |
@@ -22,7 +22,7 @@ Use the single human-authorized TV, verify its model and Android version. Resolv
 
 1. Discover ADB via PATH or the installed Android SDK. Run `adb devices -l`, then select the authorized serial explicitly in every command. Read manufacturer/model, Android release and API with `getprop`.
 2. Record installed package/version/certificate and current settings. Do not publish network addresses, Wi-Fi names, pairing codes, ADB keys or private device logs.
-3. Download **both** artifacts from exact profile URLs before any removal. Prefer a local APK only if its checksum matches. Reject an HTML/error response saved as APK.
+3. Download **both** artifacts from exact profile URLs before installation. Prefer a local APK only if its checksum matches. Reject an HTML/error response saved as APK.
 4. Verify SHA-256, package, versionCode and signing certificate against the profile using `sha256sum`, `aapt`/`apkanalyzer` and `apksigner verify --print-certs` when available. Recheck installed metadata afterwards. The Screen Off TV APK uses an Android debug key, not a private production key.
 5. The Shizuku fork has a different certificate from RikkaApps, despite sharing `moe.shizuku.privileged.api`. Do not replace it with the original app or another fork. An existing verified fork should be preserved during ordinary updates.
 
@@ -38,7 +38,7 @@ sha256sum "$shizuku_apk" "$screen_apk"
 
 ## 3. Establish device access
 
-For manual navigation and menu images follow [steps 3–5](INSTALL.en.md). Developer options are usually enabled by selecting Android TV OS Build about seven times. Enable USB debugging and Wireless debugging where exposed. Do not unlock the bootloader or root the TV.
+For manual navigation and menu images follow [steps 2–4](INSTALL.en.md). Developer options are usually enabled by selecting Android TV OS Build about seven times. Enable USB debugging and Wireless debugging where exposed. Do not unlock the bootloader or root the TV.
 
 Use an existing authorized connection. If pairing a workstation, use the live TV pairing/connection ports separately:
 
@@ -51,18 +51,7 @@ Allow the human to enter or approve device authorization when required. Do not a
 
 ## 4. Install or update
 
-**Ordinary update:** use `adb -s "$tv_serial" install -r "$apk"` for a validated same-certificate artifact. Preserve settings. A signature mismatch is not permission to uninstall.
-
-**Authorized fresh installation:** capture TV Settings → Apps → selected app → Uninstall → confirmation. Remove Screen Off TV first, then Shizuku. Exact allowlist:
-
-```bash
-adb -s "$tv_serial" uninstall com.thaivancuong93.screenofftv
-adb -s "$tv_serial" uninstall moe.shizuku.privileged.api
-```
-
-These delete app data. Do not reset the TV or delete unrelated apps/accounts.
-
-**Authorized RikkaApps → fork migration:** uninstall only the original Shizuku if that is the requested migration, forget only its identified old wireless pairing, then install the fork and pair again. Keep workstation pairings. Reauthorize Screen Off TV. Do not repeatedly uninstall an existing fork to resolve a pairing problem.
+For an existing same-certificate app use `adb -s "$tv_serial" install -r "$apk"` to preserve settings. If the certificate differs, stop that installation and report the installed and requested distributions; do not bypass the conflict.
 
 Install Shizuku first, then open its actual launcher activity or TV Settings → Apps → Shizuku → Open:
 
@@ -143,6 +132,6 @@ Return installed versions, actions taken, Shizuku and app readiness, both boot s
 
 ## Prompt for a human to reuse
 
-> Read docs/AGENT-INSTALL.md and docs/install-profile.json. Install or update Screen Off TV and the selected thedjchi/Shizuku fork on my authorized TV. Preserve existing settings unless I explicitly request a fresh install. For a fresh setup use Vietnamese, Mute double press, Screen Off / Picture Off and both boot switches enabled. Record each completed step and real screenshots. Complete pairing, verify boot services before opening apps when reboot testing is requested, and report unverified playback or physical RED steps accurately. Ask only for missing device authorization, an ambiguous target or a required physical action.
+> Read docs/AGENT-INSTALL.md and docs/install-profile.json. Install or update Screen Off TV and the selected thedjchi/Shizuku fork on my authorized TV. Preserve existing settings. For a fresh setup use Vietnamese, Mute double press, Screen Off / Picture Off and both boot switches enabled. Record each completed step and real screenshots. Complete pairing, verify boot services before opening apps when reboot testing is requested, and report unverified playback or physical RED steps accurately. Ask only for missing device authorization, an ambiguous target or a required physical action.
 
 Sources: [fork release](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi), [setup](https://github.com/thedjchi/Shizuku/wiki/Setup), [features](https://github.com/thedjchi/Shizuku/wiki/Features), [Google ADB](https://developer.android.com/tools/adb).
