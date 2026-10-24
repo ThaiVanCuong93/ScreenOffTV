@@ -1,0 +1,30 @@
+# IDE and machine-specific configuration
+*.iml
+.idea/
+local.properties
+.DS_Store
+
+# Generated build and runtime files
+.gradle/
+.kotlin/
+**/build/
+.cxx/
+.externalNativeBuild/
+captures/
+*.trace
+*.hprof
+
+# APKs, bundles and signing keys
+/dist/*
+/app/release/
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# Keep unfinished installation documents local until their next publication
+/docs/
+
+# Publish only the current tested APK and its checksum
+!/dist/Screen-Off-TV-0.1.2.apk
+!/dist/SHA256SUMS
