@@ -105,7 +105,28 @@ https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-sourc
 
 ## 语言
 
-默认使用**跟随系统**。在 **设置 → 语言** 中选择 **跟随系统**、**Tiếng Việt**、**English** 或 **简体中文**。英语界面中的入口为 **Settings → Language**，跟随系统选项为 **Follow…281 tokens truncated…n./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
+默认使用**跟随系统**。在 **设置 → 语言** 中选择 **跟随系统**、**Tiếng Việt**、**English** 或 **简体中文**。英语界面中的入口为 **Settings → Language**，跟随系统选项为 **Follow system**。
+
+如果不支持电视的系统语言，应用使用英语。选择会被保存。切换语言不会更改遥控设置，也不会重启正在运行的服务。
+
+## 构建与测试
+
+当前版本：**0.1.3**（versionCode 3），源码与下载 APK 版本一致。
+
+应用 ID：`com.thaivancuong93.screenofftv`。需要 JDK 17 和 Android SDK platform 35。请按本机环境设置 `JAVA_HOME`、`ANDROID_HOME`。
+
+`dist/` 中的 APK 使用 release 构建，并以 Android 调试密钥签名。构建命令：
+
+```bash
+./gradlew :app:assembleDebugSignedRelease
+```
+
+输出：`app/build/outputs/apk/debugSigned/release/app-debugSigned-release.apk`。
+
+构建 debug APK 并运行单元测试：
+
+```bash
+./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
 ```
 
 APK 位于 `app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`，使用 Android 调试密钥签名。
