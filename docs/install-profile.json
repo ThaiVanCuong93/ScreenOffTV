@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "human_guide": "docs/INSTALL.md",
   "agent_guide": "docs/AGENT-INSTALL.md",
   "defaults": {
@@ -9,7 +9,8 @@
     "press_action": "Double",
     "start_on_boot": true,
     "screen_mode": "ShizukuPowerOffScreen",
-    "optional_key_change": "physical RED button; learn and confirm actual event code; never change the app default"
+    "optional_key_change": "physical RED button; learn and confirm actual event code; never change the app default",
+    "artifact_source": "published_apk"
   },
   "device": {
     "owner_reported_marketing_name": "Xiaomi TV A Pro 55-inch (2026)",
@@ -93,9 +94,9 @@
   "install_policy": {
     "path_base": "repository_root",
     "artifact_selection_order": [
-      "explicit_user_apk_or_current_build",
-      "matching_local_screen_off_apk",
-      "screen_off_download_url"
+      "explicit_user_apk",
+      "cached_apk_matching_profile_sha256",
+      "direct_apk_download_url"
     ],
     "installed_newer_than_target": "preserve; do not downgrade automatically",
     "existing_install_settings": "preserve language, key, gesture, display mode, both boot switches and TCP/Watchdog unless user requests changes",
@@ -106,6 +107,21 @@
       "verification",
       "shizuku.verified_on_target_tv",
       "shizuku.non_root_boot.verified_on_target_tv"
-    ]
+    ],
+    "default_workflow": "Read this JSON, connect to the TV, download the published APK directly, verify SHA-256, install with adb install -r, authorize and configure.",
+    "clone_repository_for_install": false,
+    "build_from_source_for_install": false,
+    "build_requires_explicit_user_request": true,
+    "download_failure": "Report the URL/download/checksum error; do not fall back to cloning or building.",
+    "required_tools": [
+      "ADB (Android Platform Tools)",
+      "HTTPS downloader",
+      "SHA-256 calculator"
+    ],
+    "optional_existing_tools": [
+      "aapt",
+      "apksigner"
+    ],
+    "install_build_toolchain_for_optional_checks": false
   }
 }

@@ -1,26 +1,39 @@
 # Hướng dẫn agent cài và cập nhật Screen Off TV
 
-Dùng tài liệu này khi người dùng yêu cầu cài, cập nhật hoặc cấu hình Screen Off TV trên TV. Thực hiện công việc trên TV được chỉ định; tài liệu này không phải yêu cầu tự kết nối hay thay đổi thiết bị.
+Dùng tài liệu này khi người dùng yêu cầu **cài hoặc cập nhật Screen Off TV lên TV bằng APK có sẵn**.
 
-Đọc [install-profile.json](install-profile.json) để lấy thông tin APK. Đường dẫn tệp trong profile tính từ **thư mục gốc dự án**, không phải thư mục `docs/`. Khi cần đối chiếu màn hình, dùng [hướng dẫn Việt](INSTALL.md) hoặc [hướng dẫn Anh](INSTALL.en.md). Các ảnh là ví dụ; đọc trạng thái TV hiện tại trước khi thao tác.
+**Quy tắc bắt buộc:** yêu cầu “cài lên TV”, “cập nhật app”, “cài bản mới nhất” hoặc “đẩy sang TV” nghĩa là **tải APK đã phát hành và cài**, không phải tải mã nguồn về build. Không chạy `git clone`, Gradle, Android Studio hoặc cài JDK/Android SDK để thực hiện việc cài ứng dụng. Chỉ chuyển sang công việc build khi người dùng yêu cầu rõ “build”, “biên dịch” hoặc sửa mã nguồn. Link tải lỗi, thiếu công cụ hoặc phiên bản trên TV khác với dự kiến không phải lý do để tự build.
 
-## 1. Chốt việc cần làm và chọn phiên bản
+## Luồng thực hiện
 
-Áp dụng yêu cầu mới nhất của người dùng trước, sau đó mới dùng mặc định trong tài liệu.
+1. Đọc hồ sơ APK để lấy URL, phiên bản và SHA-256.
+2. Kết nối đúng TV bằng ADB; kiểm tra hai ứng dụng đang có.
+3. Với ứng dụng cần cài/cập nhật, dùng APK đã có đúng checksum hoặc tải APK trực tiếp.
+4. Kiểm tra SHA-256, cài/chạy Shizuku và cấu hình tự khởi động theo yêu cầu.
+5. Cài APK Screen Off TV bằng `adb install -r`, cấp quyền, mở ứng dụng và kiểm tra trạng thái sẵn sàng.
+6. Báo phiên bản, cấu hình và phần còn vướng. Chỉ thử phím, tắt màn hình, khởi động lại hoặc chạy test khi người dùng yêu cầu.
+
+## 1. Đọc hồ sơ APK, không clone dự án
+
+Hồ sơ: [install-profile.json](https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/install-profile.json).
+
+Nếu chưa có bản sao dự án, chỉ tải tệp JSON này vào thư mục tạm. Có thể đọc trực tiếp [hướng dẫn có ảnh](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/codex/publish-source/docs/INSTALL.md) khi cần; không tải cả kho mã để lấy hướng dẫn hoặc APK. Nếu đã có dự án trên máy, có thể dùng [profile cục bộ](install-profile.json); `local_apk` là đường dẫn tính từ thư mục gốc bản sao hiện có, không phải yêu cầu tạo một bản sao mới.
+
+Chỉ cần **ADB, công cụ tải HTTPS và công cụ tính SHA-256**. JDK, Gradle và Android SDK đầy đủ không phải điều kiện cài APK. Nếu thiếu ADB, dùng Android Platform Tools; không cài bộ công cụ build chỉ để lấy ADB.
 
 | Yêu cầu | Cách thực hiện |
 |---|---|
-| Cài mới | Cài hai ứng dụng còn thiếu, khởi động Shizuku, cấp quyền và cấu hình Screen Off TV. |
-| Cập nhật APK | Dùng `adb install -r`, giữ dữ liệu và cài đặt đã lưu. Không gỡ ứng dụng để cập nhật. |
-| Build và cài bản mới | Build mã nguồn hiện tại; kiểm tra APK vừa tạo. Không thay bằng bản tải công khai cũ hơn. |
+| Cài mới | Tải APK cho ứng dụng còn thiếu. Cài Shizuku trước, sau đó cài Screen Off TV. |
+| Cập nhật / cài bản mới nhất đã phát hành | Dùng APK trong profile, cài bằng `adb install -r` và giữ cài đặt đã lưu. |
 | Chỉ cấu hình hoặc sửa kết nối | Kiểm tra ứng dụng đang có trước. Không cài lại nếu phiên bản không phải nguyên nhân. |
 | Không cần test / người dùng tự test | Cài APK, thực hiện cấu hình được yêu cầu và mở ứng dụng. Không chạy bộ kiểm thử, khởi động lại TV, thử phím hay tắt màn hình. |
 
 **Chọn APK Screen Off TV:**
 
-1. Nếu người dùng chỉ định APK hoặc yêu cầu build, dùng đúng bản đó và kiểm tra danh tính tệp.
-2. Nếu dùng APK phát hành, đọc mục `screen_off` trong profile. Phiên bản hiện tại là **0.1.3** cho cả mã nguồn và APK. Ưu tiên tệp cục bộ nếu đúng checksum; nếu không có, tải đúng URL đã ghi.
-3. Nếu TV đã cài bản mới hơn bản được chọn, giữ nguyên và kiểm tra cấu hình; không tự hạ phiên bản. Nếu người dùng chỉ định chính xác một bản cũ hơn, báo xung đột trước khi tiếp tục.
+1. Người dùng chỉ định tệp APK: dùng đúng tệp đó và đối chiếu danh tính theo yêu cầu.
+2. Các yêu cầu cài/cập nhật thông thường: dùng `screen_off.download_url` trong profile. Hiện là **0.1.3**. Nếu đã có APK tải sẵn đúng `screen_off.sha256`, dùng lại để tránh tải lần nữa.
+3. Nếu TV đã cài bản mới hơn bản được chọn, giữ nguyên và báo phiên bản; không tự hạ phiên bản, clone mã nguồn hoặc build để “theo kịp” TV.
+4. Nếu APK không tải được hoặc checksum không khớp, báo lỗi URL/checksum và dừng cài ứng dụng đó. Không tự chuyển sang build hoặc thay APK từ nguồn khác.
 
 Shizuku dùng bản **thedjchi/Shizuku 13.7.0-thedjchi** trong profile. Không đổi sang RikkaApps hoặc fork khác vì chúng có thể trùng package nhưng khác chữ ký.
 
@@ -92,26 +105,30 @@ adb -s "$tv_serial" shell dumpsys package com.thaivancuong93.screenofftv
 
 Trước khi đổi cấu hình trên TV đã có ứng dụng, đọc và ghi lại các lựa chọn hiện tại qua giao diện. Không sửa trực tiếp SharedPreferences hoặc dữ liệu riêng để giả lập trạng thái sẵn sàng.
 
-### Kiểm tra tệp APK
+### Tải APK trực tiếp
 
-Lấy đúng URL trong profile hoặc tệp cục bộ được chọn ở bước 1. Gán đường dẫn tệp đã tải vào `shizuku_apk` và `screen_apk` nếu cần dùng. Các biến này là **đường dẫn trên máy tính**, không phải đường dẫn trên TV.
+Đọc `screen_off.download_url` và `shizuku.url` từ profile. Gán hai URL đó vào `screen_url` và `shizuku_url`; gán đường dẫn tệp trong thư mục tạm vào `screen_apk` và `shizuku_apk`. Đây là tệp trên máy tính, không phải đường dẫn trên TV.
+
+Chỉ tải ứng dụng cần cài/cập nhật:
 
 ```bash
+curl --fail --location --retry 2 --output "$shizuku_apk" "$shizuku_url"
+curl --fail --location --retry 2 --output "$screen_apk" "$screen_url"
 sha256sum "$shizuku_apk"
 sha256sum "$screen_apk"
-aapt dump badging "$shizuku_apk"
-aapt dump badging "$screen_apk"
-apksigner verify --print-certs "$shizuku_apk"
-apksigner verify --print-certs "$screen_apk"
 ```
 
-Chỉ chạy cho APK cần cài. Tìm `aapt` và `apksigner` trong Android SDK `build-tools` nếu chưa có trong PATH. Đối chiếu SHA-256, package, versionCode, versionName và SHA-256 chứng thư ký với **đúng mục APK đã chọn** trong profile. Với bản vừa build, đối chiếu phiên bản với cấu hình build và ghi checksum mới; không so với checksum APK cũ. Không dùng trang HTML hoặc tệp tải lỗi làm APK.
+Trên máy không có `curl` hoặc `sha256sum`, dùng công cụ HTTPS/SHA-256 tương đương. Đối chiếu với `shizuku.sha256` và `screen_off.sha256`. Dừng nếu tải lỗi hoặc checksum khác; không lưu trang HTML thành APK. Không dùng link trang mã nguồn, nút Code → Download ZIP hoặc `git clone` để lấy APK.
 
-Để kiểm tra chữ ký ứng dụng đã cài, lấy đường dẫn `base.apk` từ `pm path`, bỏ tiền tố `package:`, tải bản sao về thư mục tạm rồi chạy `apksigner verify --print-certs` trên bản sao. Không đoán đường dẫn cài đặt.
+### Kiểm tra thêm nếu công cụ đã có sẵn
 
-Nếu thiếu công cụ xác minh, ghi rõ phần chưa kiểm tra. Nếu checksum sai, APK không hợp lệ hoặc chữ ký không khớp, dừng cài ứng dụng đó và báo lỗi cụ thể; không tự gỡ ứng dụng hoặc thêm `-d` để vượt lỗi. APK Screen Off TV hiện dùng khóa debug Android.
+Có thể dùng `aapt dump badging` và `apksigner verify --print-certs` để đọc package, phiên bản và chứng thư. **Không tải JDK/Android SDK để làm kiểm tra tùy chọn này.** Nếu chưa có công cụ, dùng APK khớp SHA-256 trong profile, để trình cài Android kiểm tra APK/chữ ký khi `adb install -r`, rồi đọc lại phiên bản bằng `dumpsys package` sau khi cài.
 
-**Xong bước này khi:** đã chọn cách xử lý cho từng ứng dụng; APK cần cài đã khớp thông tin và tương thích chữ ký với bản đang có.
+Nếu cần đối chiếu chữ ký bản đang cài và đã có công cụ, lấy đường dẫn `base.apk` từ `pm path`, bỏ tiền tố `package:`, tải bản sao về thư mục tạm rồi kiểm tra; không đoán đường dẫn.
+
+Nếu trình cài báo chữ ký không khớp, APK không hợp lệ hoặc hạ phiên bản, dừng và báo đúng lỗi. Không gỡ ứng dụng hoặc thêm `-d` để vượt lỗi. APK Screen Off TV hiện ký bằng khóa debug Android.
+
+**Xong bước này khi:** đã chọn cách xử lý riêng cho từng ứng dụng; APK cần cài đã tải xong và SHA-256 khớp profile. Các kiểm tra tùy chọn chưa làm phải ghi rõ, không biến chúng thành yêu cầu build.
 
 ## 4. Cài và chạy Shizuku
 
@@ -249,7 +266,7 @@ Tự khởi động: công tắc Shizuku; công tắc Screen Off TV
 Đã kiểm tra: các mục thực sự thực hiện và kết quả
 Chưa kiểm tra: các mục bỏ qua theo yêu cầu hoặc thiếu điều kiện
 Còn vướng: lỗi cụ thể hoặc thao tác người dùng cần làm
-APK: đường dẫn bản đã cài, nếu vừa build hoặc được yêu cầu cung cấp
+APK: tên tệp, nguồn tải và kết quả kiểm tra SHA-256
 ```
 
 Không lấy `device`, `verification` hoặc `verified_on_target_tv` trong profile làm kết quả của lần cài này; đó là dữ liệu lịch sử. Không tự cập nhật chúng sau mỗi lần cài. Chỉ lưu tài liệu/ảnh nếu người dùng yêu cầu; không đưa mã ghép đôi, khóa ADB hay thông tin mạng riêng vào nội dung công khai. Không tự commit, đẩy Git hoặc phát hành APK khi chỉ được yêu cầu cài lên TV.

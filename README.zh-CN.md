@@ -39,7 +39,7 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 4. Shizuku 请求授权时，选择 **Allow all the time**。等待显示 **Ready to control** 和 **Shizuku: running · authorized**。
 5. 打开 **Settings**，选择遥控按键、操作方式、息屏模式和语言。修改息屏模式前先停止服务。
 
-也可按下方说明自行构建 APK。
+在电视上安装时，请直接下载上方 APK，无需克隆仓库或构建。下方构建说明仅用于源码开发。
 
 ## 使用方法
 

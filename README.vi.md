@@ -37,7 +37,7 @@ Bản tải về hiện tại: **0.1.3**, ký bằng khóa debug Android.
 4. Khi Shizuku hỏi quyền, chọn **Cho phép mọi lúc**. Chờ trạng thái **Sẵn sàng điều khiển**, kèm **Shizuku: đang chạy · đã cấp quyền**.
 5. Vào **Cài đặt** để chọn phím remote, thao tác, chế độ tắt màn hình và ngôn ngữ. Dừng dịch vụ trước khi đổi chế độ tắt màn hình.
 
-Bạn cũng có thể tự build APK theo hướng dẫn bên dưới.
+Để cài lên TV, dùng APK tải sẵn ở trên; không cần clone dự án hoặc build. Phần build bên dưới chỉ dành cho phát triển mã nguồn.
 
 ## Cách sử dụng
 

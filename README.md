@@ -37,7 +37,7 @@ Current download: **0.1.3**, signed with an Android debug key.
 4. When Shizuku asks for permission, select **Allow all the time**. Wait for **Ready to control** and **Shizuku: running · authorized**.
 5. Open **Settings** to choose the remote key, press action, screen-off mode and language. Stop the service before changing screen-off modes.
 
-You can also build the APK using the instructions below.
+For TV installation, use the downloadable APK above. Cloning and building are unnecessary; the build section below is for source development.
 
 ## How to use
 
