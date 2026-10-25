@@ -44,7 +44,7 @@
     <string name="privacy">隐私</string>
     <string name="key_hint">默认使用静音键。所选按键仍保留电视上的原有功能。</string>
     <string name="selected_key">已选择：%1$s</string>
-    <string name="learn_key">识别其他遥控按键</string>
+    <string name="learn_key">设置自定义遥控按键</string>
     <string name="learn_requires_service">请先启动服务，再识别遥控按键。</string>
     <string name="mode_description">两种模式都会关闭画面；能否继续播放取决于电视和播放器。</string>
     <string name="panel_mode">关闭屏幕（Screen Off / Picture Off）</string>

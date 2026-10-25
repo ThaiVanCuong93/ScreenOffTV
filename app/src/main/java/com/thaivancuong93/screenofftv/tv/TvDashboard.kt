@@ -162,8 +162,7 @@ fun TvDashboard(
             onConfirm = { code ->
                 selectedKey = code
                 preferences.remoteKey = code
-                VolumeKeyEventShizukuHost.endCapture()
-                dialog = "key"
+                dismiss()
             },
             onCancel = {
                 VolumeKeyEventShizukuHost.endCapture()
@@ -222,19 +221,19 @@ fun TvDashboard(
                             "key" -> {
                                 Text(stringResource(R.string.key_hint))
                                 Text(stringResource(R.string.selected_key, keyName))
-                                val choices = if (RemoteKeys.presets.any { it.first == selectedKey }) RemoteKeys.presets
-                                    else RemoteKeys.presets + (selectedKey to localizedKeyName(context, selectedKey))
-                                choices.forEach { (code, name) ->
-                                    TvButton(localizedKeyName(context, code), modifier = if (selectedKey == code) Modifier.focusRequester(dialogFocus) else Modifier,
-                                        selected = selectedKey == code) {
-                                        selectedKey = code; preferences.remoteKey = code; dismiss()
-                                    }
-                                }
-                                TvButton(stringResource(R.string.learn_key), enabled = running) {
+                                TvButton(stringResource(R.string.learn_key), modifier = if (running) Modifier.focusRequester(dialogFocus) else Modifier, enabled = running) {
                                     VolumeKeyEventShizukuHost.beginCapture()
                                     dialog = "learn"
                                 }
                                 if (!running) Text(stringResource(R.string.learn_requires_service))
+                                val choices = if (RemoteKeys.presets.any { it.first == selectedKey }) RemoteKeys.presets
+                                    else RemoteKeys.presets + (selectedKey to localizedKeyName(context, selectedKey))
+                                choices.forEach { (code, name) ->
+                                    TvButton(localizedKeyName(context, code), modifier = if (!running && selectedKey == code) Modifier.focusRequester(dialogFocus) else Modifier,
+                                        selected = selectedKey == code) {
+                                        selectedKey = code; preferences.remoteKey = code; dismiss()
+                                    }
+                                }
                             }
                             "mode" -> RemoteGestureDetector.Mode.entries.forEach { option ->
                                 TvButton(localizedModeName(context, option), modifier = if (mode == option) Modifier.focusRequester(dialogFocus) else Modifier, selected = mode == option) {

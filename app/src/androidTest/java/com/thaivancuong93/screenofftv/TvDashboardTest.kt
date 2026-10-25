@@ -11,6 +11,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.thaivancuong93.screenofftv.i18n.AppLanguage
 import com.thaivancuong93.screenofftv.settings.test.FakeSettingsRepository
 import com.thaivancuong93.screenofftv.tv.TvDashboard
+import com.thaivancuong93.screenofftv.tv.TvPreferences
+import com.thaivancuong93.screenofftv.service.ScreenOffTVService
+import com.thaivancuong93.screenofftv.service.hosts.VolumeKeyEventShizukuHost
 import com.thaivancuong93.screenofftv.ui.theme.ScreenOffTVTheme
 import org.junit.Rule
 import org.junit.Test
@@ -19,11 +22,11 @@ import org.junit.Test
 class TvDashboardTest {
     @get:Rule val compose = createComposeRule()
 
-    private fun showDashboard() {
+    private fun showDashboard(initialLanguage: String = "en") {
         val host = ApplicationProvider.getApplicationContext<Context>()
         val settings = FakeSettingsRepository()
         compose.setContent {
-            var language by remember { mutableStateOf("en") }
+            var language by remember { mutableStateOf(initialLanguage) }
             val context = remember(language) { AppLanguage.wrap(host, language) }
             CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides context.resources.configuration) {
                 ScreenOffTVTheme(darkTheme = true, dynamicColor = false) {
@@ -36,6 +39,41 @@ class TvDashboardTest {
             }
         }
     }
+
+    private fun customKeyCanBeConfirmed(language: String) {
+        val host = ApplicationProvider.getApplicationContext<Context>()
+        val context = AppLanguage.wrap(host, language)
+        val preferences = TvPreferences(host)
+        val originalKey = preferences.remoteKey
+        val originalState = ScreenOffTVService.state.value
+        try {
+            ScreenOffTVService.state.value = ScreenOffTVService.State.Prepared
+            showDashboard(language)
+            compose.onNodeWithText(context.getString(R.string.settings), useUnmergedTree = true).performClick()
+            compose.onNodeWithText(context.getString(R.string.remote_key), useUnmergedTree = true).performClick()
+            // The custom-key action must be visible without scrolling past the presets.
+            compose.onNodeWithText(context.getString(R.string.learn_key)).assertIsDisplayed().performClick()
+            compose.onNodeWithText(context.getString(R.string.learn_title)).assertIsDisplayed()
+            compose.runOnIdle { VolumeKeyEventShizukuHost.capturedKey.value = 0x18e }
+            compose.onNodeWithText(context.getString(R.string.confirm_key)).performClick()
+            compose.onNodeWithText(context.getString(R.string.learn_title)).assertDoesNotExist()
+            compose.onNodeWithText(context.getString(R.string.choose_key)).assertDoesNotExist()
+            compose.onNodeWithText(context.getString(R.string.tv_settings)).assertIsDisplayed()
+            compose.runOnIdle {
+                org.junit.Assert.assertEquals(0x18e, preferences.remoteKey)
+                org.junit.Assert.assertFalse(VolumeKeyEventShizukuHost.captureActive.value)
+            }
+        } finally {
+            preferences.remoteKey = originalKey
+            ScreenOffTVService.state.value = originalState
+            VolumeKeyEventShizukuHost.endCapture()
+            VolumeKeyEventShizukuHost.capturedKey.value = null
+        }
+    }
+
+    @Test fun customKeyWorksInEnglish() = customKeyCanBeConfirmed("en")
+    @Test fun customKeyWorksInChinese() = customKeyCanBeConfirmed("zh-CN")
+    @Test fun customKeyWorksInVietnamese() = customKeyCanBeConfirmed("vi")
 
     @Test fun aboutScrollsWithRemoteAndClosesWithOk() {
         showDashboard()

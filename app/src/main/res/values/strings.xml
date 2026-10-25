@@ -44,7 +44,7 @@
     <string name="privacy">Privacy</string>
     <string name="key_hint">Mute is the default. The selected key keeps its original TV function.</string>
     <string name="selected_key">Selected: %1$s</string>
-    <string name="learn_key">Learn another remote key</string>
+    <string name="learn_key">Set custom remote key</string>
     <string name="learn_requires_service">Start the service before learning a remote key.</string>
     <string name="mode_description">Both modes turn off the picture; continued playback depends on the TV and player.</string>
     <string name="panel_mode">Screen Off / Picture Off</string>

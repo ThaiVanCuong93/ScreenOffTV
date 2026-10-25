@@ -2,16 +2,16 @@
 
 **English** · [Tiếng Việt](INSTALL.md) · [简体中文](INSTALL.zh-CN.md) · [AI agent runbook](AGENT-INSTALL.md) · [README](../README.md)
 
-Follow this order: **Shizuku → pair → enable boot startup → Screen Off TV → authorize → verify**. Prepare a remote, Wi-Fi and a USB drive or computer. Screenshots are from the actual TV in Vietnamese.
+Follow this order: **install Shizuku → connect Shizuku to the TV → enable Shizuku startup on boot → install Screen Off TV → authorize → check the features**. Screenshots are from the TV with its interface set to English.
 
 ## 1. Download both APKs first
 
-Use a remote, home Wi-Fi and either a computer with [Google Platform Tools](https://developer.android.com/tools/releases/platform-tools) or a USB drive and TV file manager. Screen Off TV needs Android 8+; wireless pairing additionally needs firmware exposing Wireless debugging.
+You need a TV connected to Wi-Fi, its remote, and either a computer with [Google Platform Tools](https://developer.android.com/tools/releases/platform-tools) or a USB drive and TV file manager. Screen Off TV requires Android TV 8.0 or later; compatibility depends on the firmware. Starting Shizuku through Wireless debugging requires Android 11 or later and firmware that exposes this setting.
 
-| App | Download |
-|---|---|
-| TV-compatible Shizuku fork, 13.7.0-thedjchi | [Release](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi) · [APK](https://github.com/thedjchi/Shizuku/releases/download/v13.7.0-thedjchi/shizuku-v13.7.0-thedjchi.apk) |
-| Screen Off TV 0.1.2 | [Repository APK page](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/main/dist/Screen-Off-TV-0.1.2.apk) · [APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk) |
+| App | Project | Download |
+|---|---|---|
+| TV-compatible Shizuku fork, 13.7.0-thedjchi | [Release](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi) | [APK](https://github.com/thedjchi/Shizuku/releases/download/v13.7.0-thedjchi/shizuku-v13.7.0-thedjchi.apk) |
+| Screen Off TV 0.1.2 | [Repository APK page](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/main/dist/Screen-Off-TV-0.1.2.apk) | [APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk) |
 
 On GitHub's APK page choose Download raw file. Compare SHA-256 with `sha256sum FILE.apk` on Linux or `Get-FileHash FILE.apk -Algorithm SHA256` in PowerShell. Do not install an HTML page renamed to APK.
 
@@ -22,22 +22,20 @@ Screen-Off-TV-0.1.2.apk
 96860596bfaec0f69f3f98f5f73f2b96d6f0fea57abe067cbed5d58ff5244fd4
 ```
 
-The selected Shizuku is the **thedjchi fork**, not RikkaApps. Its maintainer currently pauses maintenance; recheck its repository before future upgrades. Screen Off TV is a test build signed with an Android debug key. [Machine-readable artifact identities](install-profile.json).
-
 ## 2. Enable Developer options and debugging
 
 1. Settings → System / Device preferences → About → Android TV OS Build. Press OK about seven times until the developer confirmation appears; enter the TV lock code if asked.
 2. Return to System / Device preferences → Developer options. Leave its main switch on.
 3. Find Debugging and enable USB debugging.
-4. Open Wireless debugging (Vietnamese: **Gỡ lỗi qua Wi-Fi**) → Enabled; accept your own trusted network prompt if shown. Do not enable OEM unlocking or root the TV.
+4. Open **Wireless debugging → Enabled**; accept your own trusted network prompt if shown. Do not enable OEM unlocking or root the TV.
 
-![Developer menu with USB debugging and Wireless debugging entry](images/install/07-debugging-menu.png)
+![Developer menu with USB debugging and Wireless debugging entry](images/install/debugging_menu_en.png)
 
-This screenshot precedes enabling Wi-Fi debugging: open that row and select Enabled. The TV already had Developer options enabled, so no original Build-tapping screenshot is supplied.
+The screenshot shows USB debugging and Wireless debugging enabled.
 
 ## 3. Install Shizuku first
 
-**USB:** copy both APKs to a USB drive, attach it to the TV, open the TV file manager and select the Shizuku APK. If blocked, Settings → Apps → Special app access → Install unknown apps → allow that file manager only. Return to the APK → Install → Open. Revoke the file manager's installer permission afterwards if desired. Do not disable protection to bypass an unexplained warning.
+**USB:** copy the Shizuku APK to a USB drive, attach it to the TV, open the TV file manager and select the Shizuku APK. If blocked, Settings → Apps → Special app access → Install unknown apps → allow that file manager only. Return to the APK → Install → Open. Revoke the file manager's installer permission afterwards if desired. Do not disable protection to bypass an unexplained warning.
 
 **Computer:** connect using the TV's actual pairing and connection ports (they are different), enter its current code when prompted and approve your own computer:
 
@@ -52,24 +50,26 @@ Replace uppercase placeholders with observed values. If the firmware provides an
 
 Open Shizuku from the launcher or Settings → Apps → Shizuku → Open.
 
-![Shizuku installed but not yet running; select Pairing](images/install/10-shizuku-install.png)
+![Shizuku installed but not yet running](images/install/shizuku_not_run_en.png)
 
-## 4. Pair Shizuku's own key
+The message **Shizuku is not running** means the Shizuku service has not started. It changes to **Shizuku is running** after a successful start.
 
-1. Shizuku → Start via Wireless debugging → Pairing.
-2. Select Developer options in its dialog.
-3. Wireless debugging → Pair device with pairing code. Leave the code screen open for Shizuku to detect it automatically. Never publish active codes.
-4. Return to Shizuku and choose Start if needed. Wait for Shizuku is running. Old paired entries or merely returning to the app do not prove a new pairing succeeded; verify startup/boot recovery.
+## 4. Connect Shizuku to the TV
 
-![TV fork pairing instructions](images/install/11-shizuku-pairing.png)
+1. In Shizuku, select **Start via Wireless debugging → Start**.
+2. If the TV shows **Allow USB debugging**, select **Always allow from this computer** and **Allow** for your connection. Wait for startup to finish; the command window closes automatically.
+3. If startup fails or Shizuku asks to pair, select **Pairing → Developer options → Wireless debugging → Pair device with pairing code**. Leave the code screen open for Shizuku to detect it, then return and select **Start**. Pairing the computer through ADB does not replace Shizuku's own pairing.
+4. Check that the status is **Shizuku is running**.
 
-If settings returns to the dialog early, use the physical remote. When using automation, avoid `uiautomator dump` or competing UiAutomation during automatic pairing; use screenshots and remote-key navigation instead.
+![Shizuku running successfully](images/install/shizuku_runing_en.png)
 
-**PC fallback:** Shizuku → Start by connecting to a computer → View command. Run the exact displayed starter command through authorized ADB; its installation path changes. PC startup alone is not wireless boot recovery. App version 13.7.0 can display server version 13.6 on Home; verify the app version in About/package info.
+If Wireless debugging is unavailable, select **Start by connecting to a computer → View command** in Shizuku and run the displayed command through ADB. Check boot recovery separately when using this method.
+
+The fork's app version 13.7.0 can display server version 13.6 on Home. Check About or Android app information for the app version `13.7.0-thedjchi`.
 
 ## 5. Enable Shizuku Start on boot
 
-Shizuku → gear icon → Settings → enable Start on boot (**Bắt đầu khi khởi động**). If setup requests WRITE_SECURE_SETTINGS, use authorized computer ADB:
+Shizuku → gear icon → Settings → enable **Start on boot**. If setup requests WRITE_SECURE_SETTINGS, use authorized computer ADB:
 
 ```bash
 adb -s TV_SERIAL shell pm grant moe.shizuku.privileged.api android.permission.WRITE_SECURE_SETTINGS
@@ -77,9 +77,11 @@ adb -s TV_SERIAL shell pm grant moe.shizuku.privileged.api android.permission.WR
 
 Keep Wi-Fi available after reboot. Use firmware-specific app background controls only if they exist.
 
-![Start on boot enabled in the fork](images/install/13-shizuku-boot.png)
+![Start on boot enabled in the fork](images/install/shizuku_setting_en.png)
 
-The screenshot has TCP enabled and Watchdog disabled; these are test-device settings, not mandatory choices for every TV. Do not change TCP ports or root the TV. Watchdog is optional. Shizuku may wait minutes for Wi-Fi; Screen Off TV currently waits around 30 seconds. If it times out, wait for Shizuku and restart the app service, recording that automatic recovery failed for that run.
+The screenshot shows TCP and Watchdog enabled. TCP is not required on every TV. Watchdog can restart Shizuku if its service stops; it does not replace startup on boot.
+
+**Note:** Automatic startup needs the connection in step 4, Start on boot enabled and Wi-Fi available after boot. Startup time depends on the TV and Wi-Fi connection. Screen Off TV currently waits around 30 seconds for Shizuku. If Shizuku starts later, wait until it is ready and restart the Screen Off TV service. Check automatic startup in step 9.
 
 ## 6. Install and authorize Screen Off TV
 
@@ -91,42 +93,61 @@ adb -s TV_SERIAL install Screen-Off-TV-0.1.2.apk
 
 Open Screen Off TV → Start service. A fresh install may initially report Shizuku permission needed:
 
-![Fresh app before authorization](images/install/15-screen-off-install.png)
+![Fresh app before authorization](images/install/screenoffftv_not_run_en.png)
 
 Choose Allow all the time in Shizuku's prompt. Accept the app's notification permission if the TV asks.
 
-![Select Allow all the time](images/install/16-shizuku-authorization.png)
+![Screen Off TV authorized and ready](images/install/screenofftv_run_en.png)
 
 Wait for Ready, Shizuku running and permission granted. Otherwise check Shizuku first, then Check Shizuku connection or restart the service.
 
 ## 7. Confirm app defaults
 
-Settings → Remote key: **Mute**; Action: **double press**; Start when TV boots: **on**; Screen-off mode: **Screen Off / Picture Off**. Both the Shizuku and app boot switches are needed. Stop the service before changing screen-off modes. Language is available under Settings → Language; preserve existing choices during an ordinary update.
+Open **Settings** and check:
 
-![Ready, Mute double press and app boot switch enabled](images/install/19-screen-off-boot.png)
+| Setting | Default |
+|---|---|
+| Remote key | Mute |
+| Press action | Double press |
+| Start when TV boots | On |
+| Screen-off mode | Screen Off / Picture Off |
+| Language | Follow system |
+
+![Ready, Mute double press and app boot switch enabled](images/install/screenoffftv_setting_en.png)
+
+Screen Off TV has its own boot switch. Enable Shizuku's **Start on boot** in step 5 as well. Stop the service before changing screen-off modes. Change language under **Settings → Language**. Ordinary updates preserve saved preferences.
 
 ## 8. Optional RED button
 
-The default remains Mute. To use RED: start service → Settings → Remote key → Learn another remote key → press the real RED button once → read the detected code → Confirm this key. Keep double press. In Test remote key use a single press first. Do not assign Power, OK, Back or navigation keys. If RED is missing/not detected, keep Mute; select Mute again to restore defaults. Use the code detected from the remote. ADB-injected keys may behave differently. The physical RED button has not been tested, so screenshots are not available.
+The default shortcut is **Mute, double press**. To use the RED button:
+
+1. Start the service, then open **Settings → Remote key → Set custom remote key** (called **Learn another remote key** in 0.1.2).
+2. In **Learn a remote key**, press RED once on the remote. Do not use Power, OK, Back or navigation keys.
+3. When **Key detected** appears, select **Confirm this key** to save it, or **Try another key** to choose again. In 0.1.3, confirmation closes the dialog.
+4. Keep **Press action → Double press** for the default gesture. Open **Test remote key** and press RED once to check reception.
+
+![Key detected; select Confirm this key to save](images/install/set-red_key_en.png)
 
 ## 9. Test picture/audio and boot recovery
 
-Start music or a video and confirm audible playback. Double-press Mute to turn off the picture; check continuous sound; repeat to restore the picture and check playback state. The key keeps its original TV function, so test the action first. Keep the remote available to wake/recover the TV if needed. Record player/version and selected mode. An ADB screenshot may retain an image while the panel is off; observe the real panel/camera.
+**Check picture and audio:** Start music or a video and confirm sound is playing. Use the selected shortcut (Mute twice quickly by default) to turn off the picture and check that audio continues. Repeat the shortcut to restore the picture. The key keeps its original TV function, so check that function first. If the picture cannot be restored, use the TV's restart or power controls to recover.
 
-Reboot via the TV menu, wait for Wi-Fi/Shizuku, then verify services or the real shortcut **before opening either app or selecting Start**. Open the app only afterwards to inspect Ready. If opening it is required, do not report independent automatic startup.
+**Check automatic startup:** Restart the TV through its system menu and wait for Wi-Fi and Shizuku. Waiting time depends on the TV and Wi-Fi connection. **Before opening Shizuku or Screen Off TV, do not select Start service or run a computer starter command.** Start music or a video, confirm sound, then use the shortcut to turn the picture off and back on. If the picture responds and audio continues, automatic startup worked in this run.
 
-![Ready after second reboot; service inspection happened before app launch](images/install/25-reboot-second-ready.png)
+If it fails, check both boot switches and whether Shizuku is running. If opening an app or starting its service manually is required, automatic startup did not pass. Include the TV model, Android version, both app versions and displayed status when reporting a problem. Keep Wi-Fi available after reboot.
 
-The second reboot on the test TV verified both services before opening the app; Android recorded `BOOT_COMPLETED`. These results apply to the tested TV and firmware. Continuous audio with a specific player and the physical RED button have not been tested.
+![Screen Off TV ready after reboot](images/install/screenoffftv_reboot_ok_en.png)
+
+Screen Off TV **0.1.2** was rebooted twice on 2026-10-25. On the second reboot, `shizuku_server` and the foreground Screen Off TV service ran **before app launch**; Android recorded `BOOT_COMPLETED`. The image illustrates the ready state after a reboot. Results apply to the tested TV and firmware. Named-player playback and physical RED testing were not included in that recorded boot test.
 
 ## 10. Troubleshooting
 
 | Problem | Next step |
 |---|---|
-| No Wireless debugging | Use the installed Shizuku View command via PC; Reboot the TV to check whether automatic startup works. |
-| Pairing code not detected | Restart Pairing, show a fresh code with the remote, keep Wi-Fi and avoid concurrent UiAutomation. |
-| Permission denied | Start service and allow it in Shizuku; inspect authorized apps if previously denied. |
-| Shizuku ready but app timed out | Restart the app service after Shizuku is ready; record that boot run as failed. |
-| Playback pauses | Restore the picture; check player support and optionally test the other mode after stopping service. |
+| Screen Off TV does not start after reboot | Check authorization, the app's Start when TV boots setting and whether Shizuku started automatically. |
+| Shizuku cannot connect | Check Wi-Fi, USB debugging and Wireless debugging. |
+| Permission denied | Start the service and select Allow all the time in Shizuku; check authorized apps if previously denied. |
+| Shizuku ready but app timed out | Wait for Shizuku, then restart the app service. Automatic startup did not pass in that run. |
+| Playback pauses | Restore the picture and check the player; continued playback depends on the player. |
 
 Sources: [fork](https://github.com/thedjchi/Shizuku), [setup](https://github.com/thedjchi/Shizuku/wiki/Setup), [features](https://github.com/thedjchi/Shizuku/wiki/Features), [Google ADB](https://developer.android.com/tools/adb). See [test evidence](TESTING.md) and [agent runbook](AGENT-INSTALL.md).

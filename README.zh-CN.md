@@ -1,131 +1,114 @@
-# Screen Off TV — Android TV 息屏听歌，关闭画面保留声音
+# Screen Off TV — 关闭电视画面，继续收听音乐和电影声音
 
-[**带电视截图的分步安装指南**](docs/INSTALL.zh-CN.md) · [**AI 安装指南（英语）**](docs/AGENT-INSTALL.md)
+[**图文安装指南**](docs/INSTALL.zh-CN.md) · [**AI 安装指南（越南语）**](docs/AGENT-INSTALL.md)
 
-[English](README.md) · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [Tiếng Việt](README.vi.md) · **简体中文**
 
-**关闭 Android TV 屏幕，同时继续听音乐或电影、视频的声音。** Screen Off TV 是通过遥控器操作的电视息屏应用，让您无需保持画面也能收听歌曲、播客或电影对白。应用依赖 **Shizuku**，支持英语、越南语和简体中文。屏幕控制及能否继续播放取决于电视固件和播放器。
-
-[GitHub 仓库](https://github.com/ThaiVanCuong93/ScreenOffTV)
+Screen Off TV 可通过遥控器**关闭 Android TV 屏幕，同时让音乐或视频继续播放**。无需保持屏幕开启，也能收听音乐、播客、课程或电影声音。应用使用 **Shizuku**，支持越南语、英语和简体中文。能否关闭屏幕并继续播放声音，取决于电视和播放器。
 
 已在 **Xiaomi TV A Pro 55 英寸 2026 款** 上测试，运行稳定。
 
-![通过遥控器控制 Android TV 息屏的简体中文应用界面](fastlane/metadata/android/zh-CN/images/tvScreenshots/1.png)
-
-## 电视息屏听歌和收听电影音轨
-
-### 音乐和播客
-
-先在常用的电视播放器中播放音乐或播客，再使用已设置的遥控快捷操作关闭画面。在设备和播放器支持的情况下，声音可以继续播放。需要换歌或浏览内容时，再次使用相同操作开启屏幕。
-
-### 电影和视频声音
-
-如果只想听电影对白、音乐会、课程或视频的声音，可以让内容继续播放并关闭画面。Screen Off TV 负责控制屏幕，不提供内容播放，也不会为其他播放器增加后台播放功能。
+![Screen Off TV 简体中文界面](fastlane/metadata/android/zh-CN/images/tvScreenshots/1.png)
 
 ## 功能
 
-- 通过 Shizuku 启动、停止服务并检查连接。
-- 选择静音键、音量增加键、音量减小键，或识别其他遥控按键；保存前需要确认。
-- 通过单击、双击或长按 0.6 秒关闭和开启屏幕。按键仍保留电视上的原有功能。
-- 选择 Screen Off / Picture Off（默认），或通过亮度 -1 关闭背光。
-- 测试息屏前显示确认提示；开机自启动默认开启，可在设置中关闭。
-- 使用方向键和 OK 操作。在“关于应用”中用 ↑/↓ 滚动，用 OK 或 Back 关闭。
-- 支持英语、越南语和简体中文，也可跟随电视语言。不支持的语言回退为英语。
+- 通过遥控器单击、双击或长按 0.6 秒关闭和重新开启屏幕。
+- 选择静音键、音量增加键、音量减小键，或识别其他遥控按键。新按键确认后才会保存，并保留电视上的原有功能。
+- 选择 **Screen Off / Picture Off** 或关闭背光模式。
+- 随电视自动启动，可在设置中关闭。
+- 使用遥控器方向键和 OK 操作。
+- 选择越南语、英语、简体中文或跟随系统。
 
-## 下载 APK、安装与 Shizuku 授权
+## 使用要求
 
-需要 Android TV 8.0 或更高版本，以及已运行并向 Screen Off TV 授权的 Shizuku。
+- Android TV 8.0 或更高版本。
+- Shizuku 已运行，并已向 Screen Off TV 授权。
+- 按安装指南通过无线调试启动 Shizuku，需要 Android 11 或更高版本，且电视提供 **Wireless debugging** 菜单。
 
-1. 按照[图文指南](docs/INSTALL.zh-CN.md)安装并启动 [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku)。
-2. 下载 [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk)，并与 [SHA256SUMS](dist/SHA256SUMS) 核对 SHA-256。也可按下方说明自行构建。
-3. 安装 APK，打开 Screen Off TV，选择 **启动服务**，并在提示时授予 Shizuku 权限。
-4. 打开 **设置**，选择遥控按键、按键操作、息屏模式和语言。更改息屏模式前请先停止服务。
-5. 测试遥控按键，然后使用所选操作关闭和重新开启屏幕。
+Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他应用增加后台播放功能。
 
-开机自启动需要 Shizuku 已运行并获授权。不能将电源、OK、Back 或方向键设为快捷键。
+## 下载与安装
 
-## 如何使用遥控器关闭并重新开启屏幕
+当前下载版本：**0.1.2**，使用 Android 调试密钥签名。
 
-默认快捷操作是 **快速按两下静音键**。在 **设置** 中可选择单击、双击或 **长按 0.6 秒**，也可识别其他按键。按键仍保留电视上的原有功能，请先测试再使用。电源、OK、Back 和方向键保留用于电视的基本操作。
+以下操作名称对应安装指南中的英语界面截图。
 
-1. 开始播放音乐或视频，确认已有声音。
-2. 打开 Screen Off TV，启动服务并授予 Shizuku 权限。
-3. 返回播放器，使用已设置的遥控操作关闭画面。
-4. 再次使用相同操作重新开启屏幕。
+1. 按照[图文安装指南](docs/INSTALL.zh-CN.md)安装并启动 [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku)。
+2. 下载 [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk)，并与 [SHA256SUMS](dist/SHA256SUMS) 核对 SHA-256。
+3. 安装 APK，打开 Screen Off TV，选择 **Start service**。
+4. Shizuku 请求授权时，选择 **Allow all the time**。等待显示 **Ready to control** 和 **Shizuku: running · authorized**。
+5. 打开 **Settings**，选择遥控按键、操作方式、息屏模式和语言。修改息屏模式前先停止服务。
 
-如果播放停止或屏幕没有响应，请重新开启画面并检查息屏模式和播放器。不能假定所有电视或应用都支持息屏继续播放声音。
+也可按下方说明自行构建 APK。
 
-## Screen Off / Picture Off 与关闭背光模式
+## 使用方法
 
-| 模式 | 行为 | 条件 |
-|---|---|---|
-| Screen Off / Picture Off — 默认 | 请求 Android 关闭屏幕面板，同时让电视继续运行。 | 已授予 Shizuku 权限，且电视显示 API 兼容。 |
-| 关闭背光 / Brightness = -1 | 请求关闭背光，重新开启画面时恢复已保存亮度。亮度 0 仅为最低亮度。 | 已授予 Shizuku 权限，且固件支持该亮度操作。 |
+默认快捷操作为**快速按两下 Mute（静音键）**。
 
-更改模式前请先停止服务。Screen Off TV 不发送电视关机或待机命令，目标是在屏幕关闭时保持电视和播放器运行。
+1. 启动 Screen Off TV 服务，确认已就绪。
+2. 在常用播放器中播放音乐或视频，确认有声音。
+3. 快速按两下 Mute 关闭屏幕。
+4. 再快速按两下 Mute 恢复画面。
 
-## 兼容性和已验证结果
+如果已修改按键或操作方式，请使用自己的快捷操作。按键仍保留电视原有功能，请先检查。不要将电源、OK、Back 或方向键设为快捷键。
 
-应用要求 Android TV 8.0 或更高版本，但不代表所有电视都兼容。下表对应 **0.1.2**，检查日期为 **2026 年 10 月 25 日**。
+如果声音停止，先恢复画面并检查播放器。停止服务后，也可尝试另一种息屏模式。如果快捷操作无法恢复画面，可使用电视的重启或电源操作恢复。
 
-| 设备 | Android | 播放器 / 范围 | 模式 | 已验证结果 |
-|---|---|---|---|---|
-| Xiaomi TV A Pro 55 英寸 2026 款 | 未记录固件版本 | 日常使用 | 未记录模式 | 运行稳定。尚未记录播放器、使用时长和重启细节。 |
-| Xiaomi MiTV-MZTU0 | 14 / API 34 | 界面、语言、设置和方向键 | 界面配置 | 6 项 Android 测试通过，包括关于页面滚动和语言切换。 |
-| Xiaomi MiTV-MZTU0 | 14 / API 34 | 音乐或电影播放 | Screen Off / Picture Off | 尚未记录具体播放器的面板控制和声音连续播放结果。 |
-| Xiaomi MiTV-MZTU0 | 14 / API 34 | 音乐或电影播放 | 关闭背光 | 尚未记录具体播放器的面板控制和声音连续播放结果。 |
-| Xiaomi MiTV-MZTU0 | 14 / API 34 | 开机自启动选项 | 不适用 | 已测试默认开启并保留关闭选择。已重启两次；第二次使用 thedjchi/Shizuku 13.7.0，在打开应用前确认两个服务运行。 |
+### 更改遥控按键
 
-报告其他设备时，请提供型号、Android、播放器及版本、模式，以及实际画面和声音结果。
+按英语安装指南操作时，打开 **Settings → Remote key**，选择预设按键或 **Set custom remote key**（0.1.2 中为 **Learn another remote key**）。按下想使用的按键，再选择 **Confirm this key** 保存。从 **0.1.3** 起，确认后窗口会自动关闭。
 
-## 常见问题
+使用简体中文界面时，对应入口为 **设置 → 遥控按键 → 设置自定义遥控按键**，保存按钮为 **确认使用此按键**。0.1.2 的入口名称为 **识别其他遥控按键**。
 
-### 能否关闭电视画面但保留声音？
+分步示例见 [RED 红色按键设置](docs/INSTALL.zh-CN.md#8-可选更换为-red-红色按键)。
 
-这正是应用的目标：让 Android TV 息屏后继续听歌或视频声音。但需要兼容的电视，以及会继续播放的播放器。各设备的测试结果见上表。
+## 两种息屏模式
 
-### 应用会关闭电视电源或使电视进入待机吗？
+| 模式 | 工作方式 |
+|---|---|
+| **Screen Off / Picture Off** — 默认 | 关闭屏幕，电视继续运行。需要固件支持通过 Shizuku 控制屏幕。 |
+| **关闭背光 / Brightness = -1** | 关闭背光，恢复画面时还原已保存的亮度。需要固件支持该亮度值；亮度 0 仅为最低亮度。 |
 
-不会。Screen Off TV 请求控制屏幕面板或背光，让 Android 和播放器保持运行。电视电源键的用途不同。
+修改模式前先停止服务。两种模式均不发送关机或待机命令。能否继续播放声音取决于电视和播放器。
 
-### 为什么需要 Shizuku？
+## 随电视自动启动
 
-Shizuku 提供普通 Android 应用无法直接使用的屏幕操作和遥控输入访问能力。请安装并启动 Shizuku，再向 Screen Off TV 授权。
+随电视启动选项默认开启。还需要在 Shizuku 中开启 **Start on boot**，并在电视启动后保持 Wi-Fi 可用。Screen Off TV 英语界面中的对应选项为 **Start when TV boots**。
 
-### 如何重新开启画面？
+如果 Shizuku 启动较晚，Screen Off TV 显示错误，请等 Shizuku 运行后重新启动应用服务。如果已关闭自动启动，应用下次打开时会保留该选择。
 
-再次执行已设置的遥控操作。默认是快速按两下静音键。请在屏幕仍亮着时测试并记住按键，再尝试息屏。
+参阅 [Shizuku 自启动设置](docs/INSTALL.zh-CN.md#5-设置-shizuku-开机自启动)和[重启后的检查方法](docs/INSTALL.zh-CN.md#9-验证画面声音及开机恢复)。
 
-### 所有音乐或视频应用都会继续播放吗？
+## 已测试设备
 
-不一定。播放器或电视固件可能暂停播放或拒绝屏幕控制请求。请使用您常用的播放器实际测试。
+| 设备 | 结果 |
+|---|---|
+| Xiaomi TV A Pro 55 英寸 2026 款 | 日常使用运行稳定。 |
+| Xiaomi MiTV-MZTU0 — Android 14 | 使用 0.1.2 检查了界面、语言和设置。重启两次；第二次 Shizuku 和 Screen Off TV 均在打开应用前自动运行。 |
 
-### 电视开机后服务会自动启动吗？
+结果记录于 **2026 年 10 月 25 日**。尚未记录各设备的具体播放器和使用时长。测试范围见[测试详情](docs/TESTING.md)。
 
-开机自启动默认开启，可在设置中关闭；用户主动保存的关闭选择会被保留。Shizuku 仍需已运行并获授权。已在测试电视上使用 thedjchi/Shizuku 13.7.0 验证重启恢复，详见安装指南和测试记录。
-
-### 支持哪些语言？
-
-支持英语、越南语和简体中文。**跟随系统** 使用支持的电视语言，没有可用语言时回退为英语。
-
-### 在哪里下载 APK？
-
-从本仓库下载 [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk)，并使用 [SHA256SUMS](dist/SHA256SUMS) 核验。这是使用 Android 调试密钥签名的测试版本。
+报告问题或其他电视的使用结果时，请提供电视型号、Android 版本、Shizuku 和 Screen Off TV 版本、播放器、息屏模式及实际现象。
 
 ## 语言
 
-在 **设置 → 语言 / Language** 中选择 **跟随系统**、**Tiếng Việt**、**English** 或 **简体中文**。选择会被保存。切换语言会保留遥控设置，且不会重启正在运行的服务。
+默认使用**跟随系统**。在 **设置 → 语言** 中选择 **跟随系统**、**Tiếng Việt**、**English** 或 **简体中文**。英语界面中的入口为 **Settings → Language**，跟随系统选项为 **Follow system**。
+
+如果不支持电视的系统语言，应用使用英语。选择会被保存。切换语言不会更改遥控设置，也不会重启正在运行的服务。
 
 ## 构建与测试
 
-版本：**0.1.2**（versionCode 2）。应用 ID：`com.thaivancuong93.screenofftv`。
-需要 JDK 17 和 Android SDK platform 35。请根据本机环境设置 `JAVA_HOME` 和 `ANDROID_HOME`。
+当前源码版本：**0.1.3**（versionCode 3）。上方下载链接对应 APK **0.1.2**。
+
+应用 ID：`com.thaivancuong93.screenofftv`。需要 JDK 17 和 Android SDK platform 35。请按本机环境设置 `JAVA_HOME`、`ANDROID_HOME`。
+
+构建 APK 并运行单元测试：
 
 ```bash
 ./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
 ```
 
-APK：`app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`。此构建使用 Android 调试签名密钥。`dist/` 中的 APK 名为 `Screen-Off-TV-0.1.2.apk`。
+APK 位于 `app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`，使用 Android 调试密钥签名。
 
 界面和语言测试需要连接 Android 设备：
 
@@ -133,13 +116,19 @@ APK：`app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`。此�
 ./gradlew :app:connectedDebugSignedDebugAndroidTest
 ```
 
-构建未签名的发布版本：`./gradlew :app:assembleUnsignedRelease`。分发前请使用自己的发布密钥签名。
+构建未签名的 release 版本：
+
+```bash
+./gradlew :app:assembleUnsignedRelease
+```
+
+分发前请使用自己的发布密钥签名。
 
 ## 项目结构
 
-- `app/`：电视界面、语言资源、遥控设置、后台服务和测试。
+- `app/`：电视界面、语言、遥控设置、后台服务和测试。
 - `hidden-api/`：访问 Android 屏幕 API。
-- `ipc/`：进程间通信的结果类型。
+- `ipc/`：进程间交换的数据。
 - `shizuku-service/`：通过 Shizuku 控制屏幕并接收遥控输入。
 - `design/`：原始图标素材。
 - `fastlane/`：英语、越南语和简体中文的分发信息。

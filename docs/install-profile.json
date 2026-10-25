@@ -1,10 +1,10 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "human_guide": "docs/INSTALL.md",
   "agent_guide": "docs/AGENT-INSTALL.md",
   "defaults": {
     "operation": "update_existing",
-    "language": "preserve existing choice; Vietnamese for a fresh install unless requested otherwise",
+    "language": "preserve existing choice; follow system for a fresh install unless requested otherwise",
     "remote_key": "Mute",
     "press_action": "Double",
     "start_on_boot": true,
@@ -52,7 +52,7 @@
       ],
       "permission": "android.permission.WRITE_SECURE_SETTINGS",
       "verified_on_target_tv": true,
-      "startup_delay": "May take several minutes; Screen Off TV currently waits about 30 seconds; test delayed startup explicitly",
+      "startup_delay": "Shizuku may wait several minutes for Wi-Fi; Screen Off TV currently waits about 30 seconds for Shizuku, then has a separate service-binding timeout. Test delayed startup only when requested.",
       "pc_mode": "PC-only startup does not provide automatic boot recovery"
     },
     "root_boot": "Only on a device already rooted; do not root as part of installation",
@@ -65,14 +65,14 @@
     "maintenance_status": "Maintainer currently pauses maintenance; recheck release status before future updates"
   },
   "completion_checks": [
-    "exact package IDs and versions",
-    "Shizuku running and authorized",
-    "Screen Off TV ready",
-    "app start-on-boot setting on",
-    "Mute default unchanged unless RED explicitly requested",
-    "if RED walkthrough requested: actual physical event confirmed",
-    "if panel test requested: physical screen restored and actual audio observation recorded",
-    "real reboot checked before claiming automatic recovery"
+    "package IDs, installed versions and signing identity match the selected artifacts; preserve a newer installed version instead of downgrading",
+    "Shizuku running and Screen Off TV authorized and ready",
+    "fresh install uses defaults; updates preserve existing settings unless explicitly changed by user",
+    "both boot switches match requested configuration; enabled does not mean boot recovery tested",
+    "custom key only changed when requested; physical key verified only with actual remote input",
+    "if playback test requested: actual screen off/on and audio continuity observed",
+    "if reboot test requested: both services inspected before opening apps or starting manually",
+    "if no tests requested: skip all test/reboot/screen-off actions and report not tested"
   ],
   "human_guides": {
     "vi": "docs/INSTALL.md",
@@ -87,5 +87,34 @@
     "screen_off_service_start_reason": "BOOT_COMPLETED",
     "named_player_panel_audio_tested": false,
     "physical_red_key_tested": false
+  },
+  "install_policy": {
+    "path_base": "repository_root",
+    "artifact_selection_order": [
+      "explicit_user_apk_or_current_build",
+      "local_test_build_when_user_requests_local_test_update",
+      "screen_off_for_published_install"
+    ],
+    "installed_newer_than_target": "preserve; do not downgrade automatically",
+    "existing_install_settings": "preserve language, key, gesture, display mode, both boot switches and TCP/Watchdog unless user requests changes",
+    "fresh_install_settings": "use defaults; enable Shizuku boot startup only when supported by the startup method",
+    "no_test_request": "install/configure/open only; do not run tests, reboot, learn keys or turn off the screen",
+    "historical_fields": [
+      "device",
+      "verification",
+      "shizuku.verified_on_target_tv",
+      "shizuku.non_root_boot.verified_on_target_tv"
+    ]
+  },
+  "local_test_build": {
+    "version": "0.1.3",
+    "version_code": 3,
+    "package": "com.thaivancuong93.screenofftv",
+    "local_apk": "dist/Screen-Off-TV-0.1.3.apk",
+    "sha256": "50bf492a92b21006d608714d66c002a0876a1ee0e4bcee2d939e1b65e4b899e8",
+    "certificate_sha256": "48d7e1550e1606ee121761b9d8e151c57cf558bf87b1862cd1eae69444b586a9",
+    "signing": "Android debug certificate",
+    "public_download_verified": false,
+    "usage": "Only when requested for a local test update and the file exists with matching checksum. For a fresh build, verify its actual metadata and record its new checksum."
   }
 }

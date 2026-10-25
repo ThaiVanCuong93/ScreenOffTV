@@ -89,7 +89,7 @@ Tested on **Xiaomi TV A Pro 55-inch (2026)** with stable operation, recorded on 
 - Rebooted twice. In the first run the app UI was opened during observation, so that run alone does not isolate client auto-start.
 - In the second run, before opening either app, sys.boot_completed=1, shizuku_server had a PID and ScreenOffTVService was foreground. Android recorded allowStartForeground=BOOT_COMPLETED and createdFromFg=false. No PC starter or Start service click was used in that run. Opening the UI afterwards showed Ready.
 
-![Ready after second reboot](images/install/25-reboot-second-ready.png)
+![Ready after second reboot](images/testing/0.1.2-second-reboot-ready.png)
 
 Boot recovery passed on this device. Long-term stability and other firmware versions have not been tested. The missing-Shizuku timeout case, physical RED learning and named-player panel/audio continuity remain unverified. Screenshots are not available for USB installation, enabling Developer options from scratch or the download pages.
 
