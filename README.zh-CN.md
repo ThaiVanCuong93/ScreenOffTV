@@ -31,15 +31,28 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 
 当前下载版本：**0.1.3**，使用 Android 调试密钥签名。
 
+### 自行安装
+
 以下操作名称对应安装指南中的英语界面截图。
 
 1. 按照[图文安装指南](docs/INSTALL.zh-CN.md)安装并启动 [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku)。
 2. 下载 [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk)，并与 [SHA256SUMS](dist/SHA256SUMS) 核对 SHA-256。
 3. 安装 APK，打开 Screen Off TV，选择 **Start service**。
 4. Shizuku 请求授权时，选择 **Allow all the time**。等待显示 **Ready to control** 和 **Shizuku: running · authorized**。
-5. 打开 **Settings**，选择遥控按键、操作方式、息屏模式和语言。修改息屏模式前先停止服务。
+5. 打开 **Settings**，选择遥控按键、操作方式、息屏模式和语言。修改息屏模式前先停止服务。如需随电视自动启动，请开启 Shizuku 和 Screen Off TV 两个应用的自启动选项。
 
-在电视上安装时，请直接下载上方 APK，无需克隆仓库或构建。下方构建说明仅用于源码开发。
+### 让 AI agent 安装
+
+使用具备 ADB 连接和电视界面操作工具的 agent。复制以下提示词，并在需要时提供电视地址、端口或确认连接：
+
+```text
+阅读以下指南及其中链接的 APK 配置文件：
+https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
+
+请使用已发布的 APK，在我的电视上完整安装并配置 thedjchi/Shizuku 和 Screen Off TV，不要克隆仓库或构建。连接电视，验证正确的 fork，启动 Shizuku、授予权限，并按指南配置和读回两个应用的设置。更新时保留已有设置。只有 Shizuku 正在运行，且 Screen Off TV 已获授权并就绪时，才能报告完成。如果受阻，请说明未完成的步骤，仅询问仍需我提供的信息或操作。
+```
+
+安装只需 APK；下方构建说明仅用于源码开发。
 
 ## 使用方法
 

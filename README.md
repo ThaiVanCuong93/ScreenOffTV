@@ -31,13 +31,26 @@ Screen Off TV controls the display. It does not play music or video or add backg
 
 Current download: **0.1.3**, signed with an Android debug key.
 
+### Install it yourself
+
 1. Install and start the [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku) using the [illustrated installation guide](docs/INSTALL.en.md).
 2. Download [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk). Compare its SHA-256 with [SHA256SUMS](dist/SHA256SUMS).
 3. Install the APK, open Screen Off TV and select **Start service**.
 4. When Shizuku asks for permission, select **Allow all the time**. Wait for **Ready to control** and **Shizuku: running · authorized**.
-5. Open **Settings** to choose the remote key, press action, screen-off mode and language. Stop the service before changing screen-off modes.
+5. Open **Settings** to choose the remote key, press action, screen-off mode and language. Stop the service before changing screen-off modes. For automatic startup, enable the boot switches in both Shizuku and Screen Off TV.
 
-For TV installation, use the downloadable APK above. Cloning and building are unnecessary; the build section below is for source development.
+### Ask an AI agent to install
+
+Use an agent with ADB access and TV UI controls. Copy this prompt, then provide the TV address/port or approve its connection when needed:
+
+```text
+Read this guide and the APK profile it links to:
+https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
+
+Fully install and configure thedjchi/Shizuku and Screen Off TV on my TV using the published APKs. Do not clone or build. Connect to the TV, verify the correct fork, start Shizuku, grant authorization, configure both apps and read back their settings as instructed. Preserve existing settings when updating. Report completion only when Shizuku is running and Screen Off TV is authorized and ready to control. If blocked, identify the unfinished step and ask only for the missing information or action you need from me.
+```
+
+Installation only needs the APKs; the build section below is for source development.
 
 ## How to use
 

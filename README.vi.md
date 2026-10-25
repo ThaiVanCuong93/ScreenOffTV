@@ -31,13 +31,26 @@ Screen Off TV điều khiển màn hình, không phát nhạc/video và không b
 
 Bản tải về hiện tại: **0.1.3**, ký bằng khóa debug Android.
 
+### Tự cài đặt
+
 1. Cài và khởi động [thedjchi/Shizuku dành cho TV](https://github.com/thedjchi/Shizuku) theo [hướng dẫn cài đặt có ảnh](docs/INSTALL.md).
 2. Tải [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk). Đối chiếu SHA-256 với [SHA256SUMS](dist/SHA256SUMS).
 3. Cài APK, mở Screen Off TV và chọn **Bật dịch vụ**.
 4. Khi Shizuku hỏi quyền, chọn **Cho phép mọi lúc**. Chờ trạng thái **Sẵn sàng điều khiển**, kèm **Shizuku: đang chạy · đã cấp quyền**.
-5. Vào **Cài đặt** để chọn phím remote, thao tác, chế độ tắt màn hình và ngôn ngữ. Dừng dịch vụ trước khi đổi chế độ tắt màn hình.
+5. Vào **Cài đặt** để chọn phím remote, thao tác, chế độ tắt màn hình và ngôn ngữ. Dừng dịch vụ trước khi đổi chế độ tắt màn hình. Nếu muốn tự chạy cùng TV, bật tự khởi động trong cả Shizuku và Screen Off TV.
 
-Để cài lên TV, dùng APK tải sẵn ở trên; không cần clone dự án hoặc build. Phần build bên dưới chỉ dành cho phát triển mã nguồn.
+### Nhờ AI agent cài đặt
+
+Dùng agent có công cụ kết nối ADB và điều khiển giao diện TV. Sao chép prompt sau; cung cấp địa chỉ/cổng TV hoặc xác nhận kết nối khi agent cần:
+
+```text
+Đọc hướng dẫn và hồ sơ APK được dẫn trong đó:
+https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
+
+Cài đặt hoàn chỉnh thedjchi/Shizuku và Screen Off TV trên TV của tôi từ APK có sẵn, không clone hoặc build. Kết nối TV, xác minh đúng fork, khởi động Shizuku, cấp quyền, cấu hình và đọc lại cài đặt cả hai ứng dụng theo hướng dẫn. Giữ cài đặt cũ khi cập nhật. Chỉ báo hoàn tất khi Shizuku đang chạy và Screen Off TV đã được cấp quyền, sẵn sàng điều khiển; nếu bị chặn, báo rõ bước còn thiếu và chỉ hỏi thông tin hoặc thao tác cần tôi hỗ trợ.
+```
+
+Cài đặt chỉ cần APK; phần build bên dưới dành cho phát triển mã nguồn.
 
 ## Cách sử dụng
 
