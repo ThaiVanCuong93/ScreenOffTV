@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "human_guide": "docs/INSTALL.md",
   "agent_guide": "docs/AGENT-INSTALL.md",
   "defaults": {
@@ -101,14 +101,14 @@
     "installed_newer_than_target": "preserve; do not downgrade automatically",
     "existing_install_settings": "preserve language, key, gesture, display mode, both boot switches and TCP/Watchdog unless user requests changes",
     "fresh_install_settings": "use defaults; enable Shizuku boot startup only when supported by the startup method",
-    "no_test_request": "install/configure/open only; do not run tests, reboot, learn keys or turn off the screen",
+    "no_test_request": "Skip only physical shortcut/screen/audio tests, reboot and automated tests. Still connect to TV, verify thedjchi fork, start Shizuku, authorize Screen Off TV, open settings and verify ready state.",
     "historical_fields": [
       "device",
       "verification",
       "shizuku.verified_on_target_tv",
       "shizuku.non_root_boot.verified_on_target_tv"
     ],
-    "default_workflow": "Read this JSON, connect to the TV, download the published APK directly, verify SHA-256, install with adb install -r, authorize and configure.",
+    "default_workflow": "Complete BOTH applications: connect to the intended TV; download published APKs directly; verify thedjchi/Shizuku identity; install/start/configure Shizuku; install/authorize/start Screen Off TV; open settings and read back values; report completion only after every required item is observed.",
     "clone_repository_for_install": false,
     "build_from_source_for_install": false,
     "build_requires_explicit_user_request": true,
@@ -122,6 +122,40 @@
       "aapt",
       "apksigner"
     ],
-    "install_build_toolchain_for_optional_checks": false
-  }
+    "install_build_toolchain_for_optional_checks": false,
+    "installed_shizuku_identity": "Package name or icon is insufficient. Match installed base.apk SHA-256 to shizuku.sha256, or verify the signing certificate against shizuku.certificate_sha256 with existing tools. Report unverified/conflicting identity as incomplete."
+  },
+  "required_installation_evidence": [
+    {
+      "id": "tv_connection",
+      "required": true,
+      "evidence": "ADB device state, actual model and Android/API"
+    },
+    {
+      "id": "shizuku_fork",
+      "required": true,
+      "evidence": "Installed APK SHA-256 or signing certificate proving thedjchi; installed version"
+    },
+    {
+      "id": "shizuku_running",
+      "required": true,
+      "evidence": "Current Shizuku running UI and server PID"
+    },
+    {
+      "id": "shizuku_settings",
+      "required": true,
+      "evidence": "Observed Start on boot value; unsupported or blocked setup reported explicitly"
+    },
+    {
+      "id": "screen_off_ready",
+      "required": true,
+      "evidence": "Installed version, Shizuku authorization and current Ready to control state"
+    },
+    {
+      "id": "screen_off_settings",
+      "required": true,
+      "evidence": "Settings opened and remote key, press action, display mode, language and boot switch read back; preserve existing choices for updates"
+    }
+  ],
+  "completion_rule": "Every required_installation_evidence item must be observed in this run. Otherwise report incomplete with the missing step and reason. Installing/opening Screen Off TV alone is not completion; do not use historical verification fields as current evidence."
 }
