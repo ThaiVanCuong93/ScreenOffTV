@@ -6,12 +6,12 @@ Cài theo thứ tự dưới đây: **Cài đặt APK Shizuku → Kết nối Sh
 
 ## 1. Chuẩn bị và tải hai APK
 
-Bạn cần TV có kết nối Wi-Fi, remote điều khiển, máy tính hoặc USB và một ứng dụng quản lý tệp trên TV nếu cài qua USB. Screen Off TV yêu cầu Android TV 8.0 trở lên; khả năng tương thích tùy thuộc firmware của TV. Khởi động Shizuku qua gỡ lỗi không dây cần Android 11 trở lên và firmware có mục Wireless debugging. Hướng dẫn này dùng **thedjchi/Shizuku**, bản fork có giao diện phù hợp remote TV.
+Bạn cần TV có kết nối Wi-Fi, remote điều khiển, máy tính hoặc USB và một ứng dụng quản lý tệp trên TV nếu cài qua USB. Screen Off TV yêu cầu Android TV 8.0 trở lên, khả năng tương thích tùy thuộc firmware của TV. Khởi động Shizuku qua gỡ lỗi không dây cần Android 11 trở lên và firmware có mục Wireless debugging. Hướng dẫn này dùng **thedjchi/Shizuku**, bản fork có giao diện phù hợp remote TV.
 
 | Ứng dụng | Nguồn dự án | Nguồn tải về |
 |---|---|---|
 | Shizuku 13.7.0-thedjchi | [Trang phát hành](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi) | [Tải APK](https://github.com/thedjchi/Shizuku/releases/download/v13.7.0-thedjchi/shizuku-v13.7.0-thedjchi.apk) |
-| Screen Off TV 0.1.3 | [Trang APK trong repo](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk) | [Tải APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk) |
+| Screen Off TV 0.1.3 | [Trang APK trong repo](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/main/dist/Screen-Off-TV-0.1.3.apk) | [Tải APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.3.apk) |
 
 Đối chiếu SHA-256 bằng `sha256sum TEN_TEP.apk` trên Linux hoặc `Get-FileHash TEN_TEP.apk -Algorithm SHA256` trong PowerShell:
 
@@ -38,7 +38,7 @@ Screen-Off-TV-0.1.3.apk
 
 **Qua USB:** chép Shizuku APK vào USB, cắm vào TV, mở ứng dụng quản lý tệp, chọn APK Shizuku. Nếu TV chặn cài đặt, vào **Cài đặt → Ứng dụng → Quyền truy cập đặc biệt → Cài ứng dụng không rõ nguồn gốc**, cho phép đúng ứng dụng quản lý tệp đang dùng, quay lại APK và chọn **Cài đặt → Mở**. Có thể thu hồi quyền cài APK của trình quản lý tệp sau khi cài xong. Không tắt bảo vệ hệ thống để bỏ qua một cảnh báo chưa rõ nguyên nhân.
 
-**Qua máy tính:** dùng [SDK Platform Tools của Google](https://developer.android.com/tools/releases/platform-tools). Nếu TV hiển thị cổng ghép đôi/kết nối, dùng đúng hai cổng riêng; nhập mã ghép đôi ở máy tính khi được hỏi:
+**Qua máy tính:** dùng [SDK Platform Tools của Google](https://developer.android.com/tools/releases/platform-tools). Nếu TV hiển thị cổng ghép đôi/kết nối, dùng đúng hai cổng riêng, nhập mã ghép đôi ở máy tính khi được hỏi:
 
 ```bash
 adb pair TV_IP:<PAIRING_PORT>
@@ -49,16 +49,16 @@ adb -s <TV_SERIAL> install <PATH_TO_APK>/shizuku-v13.7.0-thedjchi.apk
 
 Thay các giá trị viết hoa trong dấu `<` và `>` bằng các thông tin tương ứng trên TV của bạn. Chọn **Luôn cho phép từ máy tính này** khi TV hiện hộp thoại ghép đôi.
 
-![Shizuku sau khi cài: chưa chạy, chọn Ghép nối](images/install/shizuku_not_run_vi.png)
+![Shizuku sau khi cài: dịch vụ chưa chạy](images/install/shizuku_not_run_vi.png)
 
 Thông báo **Shizuku đang không chạy** cho biết dịch vụ Shizuku chưa được khởi động. Sau khi khởi động thành công, trạng thái chuyển thành **Shizuku đang chạy**.
 
 ## 4. Kết nối Shizuku với TV
 
 1. Trong Shizuku, chọn **Bắt đầu thông qua Gỡ lỗi không dây → Bắt đầu**.
-2. Nếu TV hiện hộp thoại **Cho phép gỡ lỗi qua USB**, tích **Luôn cho phép từ máy tính này** và chọn **Cho phép** cho kết nối của bạn. Chờ quá trình khởi động hoàn tất; màn hình dòng lệnh sẽ tự đóng.
-3. Nếu chưa khởi động được hoặc Shizuku yêu cầu ghép nối, chọn **Ghép nối → Tùy chọn nhà phát triển → Gỡ lỗi qua Wi-Fi → Ghép nối thiết bị bằng mã ghép nối**. Giữ màn hình mã để Shizuku tự nhận, sau đó quay lại chọn **Bắt đầu**. Máy tính đã ghép nối qua ADB không thay thế bước ghép nối riêng của Shizuku.
-4. Kiểm tra trạng thái **Shizuku đang chạy**.
+2. Nếu TV hiện hộp thoại **Cho phép gỡ lỗi qua USB**, tích **Luôn cho phép từ máy tính này** và chọn **Cho phép** cho kết nối của bạn. Chờ quá trình khởi động hoàn tất, màn hình dòng lệnh sẽ tự đóng.
+3. Đọc kết quả sau khi bấm Bắt đầu và xác nhận quyền. Nếu Shizuku đã chạy thì không ghép nối lại. Chỉ khi ứng dụng yêu cầu ghép nối hoặc lỗi cho biết chưa ghép nối, chọn **Ghép nối → Tùy chọn nhà phát triển → Gỡ lỗi qua Wi-Fi → Ghép nối thiết bị bằng mã ghép nối**. Cho Shizuku nhận mã hoặc nhập mã theo giao diện thực tế, xác nhận ghép nối thành công rồi quay lại chọn **Bắt đầu**, cho phép gỡ lỗi nếu được hỏi. Máy tính đã ghép nối qua ADB không thay thế bước ghép nối riêng của Shizuku. Với lỗi khác, xử lý theo thông báo.
+4. Chỉ tiếp tục khi **Shizuku đang chạy** và không còn hộp thoại chờ xác nhận. Nếu thao tác bằng agent, kiểm tra thêm `pidof shizuku_server` trả về PID. Chỉ ghép nối thành công hoặc đóng màn hình dòng lệnh chưa đủ để kết luận dịch vụ đã chạy.
 
 ![Shizuku đã khởi động thành công](images/install/shizuku_running_vi.png)
 
@@ -82,7 +82,7 @@ adb -s TV_SERIAL shell pm grant moe.shizuku.privileged.api android.permission.WR
 
 Ảnh có TCP và Watchdog đều đã được bật. Không yêu cầu phải bật TCP trên mọi TV. Watchdog là tùy chọn tự phục hồi Shizuku khi dịch vụ dừng, không thay thế việc tự khởi động lại Shizuku sau khi khởi động lại TV.
 
-**Lưu ý:** Để Shizuku tự khởi động cùng TV, cần hoàn tất kết nối ở bước 4, bật tùy chọn tự khởi động và giữ Wi-Fi sẵn sàng sau khi TV khởi động. Trên một số Android TV, quá trình khởi động và kết nối Wi-Fi sẽ mất một khoảng thời gian. Screen Off TV tiếp tục chờ Shizuku và tự kết nối lại khi Shizuku sẵn sàng, kể cả khi quá trình này mất hơn 30 giây. Nếu kết nối dịch vụ lỗi, ứng dụng sẽ thử lại; không cần mở lại ứng dụng chỉ vì Shizuku khởi động muộn. Kiểm tra tự chạy ở bước 9.
+**Lưu ý:** Để Shizuku tự khởi động cùng TV, cần hoàn tất kết nối ở bước 4, bật tùy chọn tự khởi động và giữ Wi-Fi sẵn sàng sau khi TV khởi động. Trên một số Android TV, quá trình khởi động và kết nối Wi-Fi sẽ mất một khoảng thời gian. Screen Off TV tiếp tục chờ Shizuku và tự kết nối lại khi Shizuku sẵn sàng, kể cả khi quá trình này mất hơn 30 giây. Nếu kết nối dịch vụ lỗi, ứng dụng sẽ thử lại, không cần mở lại ứng dụng chỉ vì Shizuku khởi động muộn. Kiểm tra tự chạy ở bước 9.
 
 ## 6. Cài Screen Off TV và cấp quyền cho Screen Off TV
 
@@ -92,7 +92,7 @@ Cài `Screen-Off-TV-0.1.3.apk` bằng trình quản lý tệp như bước 3, ho
 adb -s TV_SERIAL install Screen-Off-TV-0.1.3.apk
 ```
 
-Mở Screen Off TV. Lần đầu app có thể ghi **Cần cấp quyền Shizuku** dù Shizuku đã chạy:
+Mở Screen Off TV. Ứng dụng có thể ghi **Cần cấp quyền Shizuku** dù Shizuku đã chạy:
 
 ![Screen Off TV mới cài, chưa được cấp quyền](images/install/screenoffftv_not_run_vi.png)
 
@@ -116,7 +116,7 @@ Vào **Cài đặt** của Screen Off TV và xác nhận:
 
 ![Dịch vụ sẵn sàng và cài đặt mặc định](images/install/screenoffftv_setting_vi.png)
 
-**Lưu ý:** Tùy chọn **Tự khởi động cùng TV** là công tắc riêng của Screen Off TV; phải bật cả mục **Bắt đầu khi khởi động / Start on boot** trong Shizuku ở bước 5. Muốn đổi chế độ tắt màn hình, dừng dịch vụ trước mới có thể thay đổi. Thay đổi ngôn ngữ trong **Cài đặt → Ngôn ngữ**. Khi cập nhật ứng dụng, giữ các lựa chọn đã lưu nếu không muốn thay đổi.
+**Lưu ý:** Tùy chọn **Tự khởi động cùng TV** là công tắc riêng của Screen Off TV, phải bật cả mục **Bắt đầu khi khởi động / Start on boot** trong Shizuku ở bước 5. Muốn đổi chế độ tắt màn hình, dừng dịch vụ trước mới có thể thay đổi. Thay đổi ngôn ngữ trong **Cài đặt → Ngôn ngữ**.
 
 ## 8. Đổi sang nút RED màu đỏ — tùy chọn
 
@@ -139,7 +139,7 @@ Nếu không thành công, kiểm tra tùy chọn tự khởi động của cả
 
 ![Screen Off TV sẵn sàng sau reboot thử nghiệm](images/install/screenoffftv_reboot_ok_vi.png)
 
-Kết quả với Screen Off TV **0.1.2** ngày 25/10/2026: đã reboot hai lần. Lần 2 xác nhận `shizuku_server` và dịch vụ foreground của Screen Off TV chạy **trước khi mở app**; Android ghi nguồn khởi động `BOOT_COMPLETED`. Ảnh minh họa trạng thái sẵn sàng sau khi khởi động lại. Kết quả áp dụng cho TV và firmware đã thử. Chưa thử nhạc/phim với trình phát cụ thể hoặc nút RED trên remote thật.
+Kết quả với Screen Off TV **0.1.2** ngày 25/10/2026: đã reboot hai lần. Cả hai lần, Shizuku và Screen Off TV đều tự chạy **trước khi mở ứng dụng**. Lần thứ hai có ghi nhận chi tiết PID, dịch vụ foreground và nguồn khởi động `BOOT_COMPLETED`. Ảnh minh họa trạng thái sẵn sàng sau khi khởi động lại. Kết quả áp dụng cho TV và firmware đã thử. Chưa thử nhạc/phim với trình phát cụ thể hoặc nút RED trên remote thật.
 
 ## 10. Xử lý lỗi nhanh
 
@@ -147,7 +147,7 @@ Kết quả với Screen Off TV **0.1.2** ngày 25/10/2026: đã reboot hai lầ
 |---|---|
 | Screen Off TV không khởi động sau khi reboot | Kiểm tra lại Screen Off TV đã được cấp quyền, tùy chọn **Tự khởi động cùng TV** đã được bật chưa. Kiểm tra Shizuku có tự khởi động sau khi reboot không |
 | Shizuku không thể kết nối | Kiểm tra kết nối Wi-Fi, Gỡ lỗi qua USB và Gỡ lỗi qua Wi-Fi |
-| Screen Off TV chưa được cấp quyền | Bật dịch vụ, chọn Cho phép mọi lúc trong Shizuku; nếu đã từ chối, mở danh sách app được ủy quyền trong Shizuku. |
+| Screen Off TV chưa được cấp quyền | Bật dịch vụ, chọn Cho phép mọi lúc trong Shizuku, nếu đã từ chối, mở danh sách app được ủy quyền trong Shizuku. |
 | Shizuku chạy nhưng app chưa sẵn sàng sau boot | Chờ ứng dụng tự kết nối lại. Nếu vẫn lỗi, ghi thông báo trên màn hình và kiểm tra quyền Shizuku. |
 | Phim/nhạc dừng khi tắt hình | Kiểm tra trình phát và khôi phục hình. Khả năng tiếp tục phát tùy thuộc trình phát. |
 

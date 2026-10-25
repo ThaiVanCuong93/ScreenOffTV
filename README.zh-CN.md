@@ -6,7 +6,7 @@
 
 Screen Off TV 可通过遥控器**关闭 Android TV 屏幕，同时让音乐或视频继续播放**。无需保持屏幕开启，也能收听音乐、播客、课程或电影声音。应用使用 **Shizuku**，支持越南语、英语和简体中文。能否关闭屏幕并继续播放声音，取决于电视和播放器。
 
-已在 **Xiaomi TV A Pro 55 英寸 2026 款** 上测试，运行稳定。
+已在 **Xiaomi TV A Pro 55 inch 2026** 上测试，运行稳定。
 
 ![Screen Off TV 简体中文界面](fastlane/metadata/android/zh-CN/images/tvScreenshots/1.png)
 
@@ -22,24 +22,20 @@ Screen Off TV 可通过遥控器**关闭 Android TV 屏幕，同时让音乐或�
 ## 使用要求
 
 - Android TV 8.0 或更高版本。
-- Shizuku 已运行，并已向 Screen Off TV 授权。
-- 按安装指南通过无线调试启动 Shizuku，需要 Android 11 或更高版本，且电视提供 **Wireless debugging** 菜单。
+- Shizuku 正在运行，Screen Off TV 已获准使用 Shizuku。
+- 通过 Wi-Fi 启动 Shizuku 需要 Android 11 或更高版本，并提供 **Wireless debugging**。
 
 Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他应用增加后台播放功能。
 
 ## 下载与安装
 
-当前下载版本：**0.1.3**，使用 Android 调试密钥签名。
+[**下载 APK 0.1.3**](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.3.apk) · [SHA-256](dist/SHA256SUMS)
+
+APK 使用 Android 调试密钥签名。
 
 ### 自行安装
 
-以下操作名称对应安装指南中的英语界面截图。
-
-1. 按照[图文安装指南](docs/INSTALL.zh-CN.md)安装并启动 [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku)。
-2. 下载 [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk)，并与 [SHA256SUMS](dist/SHA256SUMS) 核对 SHA-256。
-3. 安装 APK，打开 Screen Off TV，选择 **Start service**。
-4. Shizuku 请求授权时，选择 **Allow all the time**。等待显示 **Ready to control** 和 **Shizuku: running · authorized**。
-5. 打开 **Settings**，选择遥控按键、操作方式、息屏模式和语言。修改息屏模式前先停止服务。如需随电视自动启动，请开启 Shizuku 和 Screen Off TV 两个应用的自启动选项。
+按照[图文安装指南](docs/INSTALL.zh-CN.md)安装并启动应用。
 
 ### 让 AI agent 安装
 
@@ -47,16 +43,16 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 
 ```text
 阅读以下指南及其中链接的 APK 配置文件：
-https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
+https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/main/docs/AGENT-INSTALL.md
 
-请使用已发布的 APK，在我的电视上完整安装并配置 thedjchi/Shizuku 和 Screen Off TV。连接电视，验证正确的 fork，启动 Shizuku、授予权限，并按指南配置和读回两个应用的设置。不要降级；更新时保留已有设置。逐项报告 JSON 中 required_installation_evidence 的证据。只有 Shizuku 正在运行，且 Screen Off TV 已获授权并就绪时，才能报告完成。如果受阻，请说明未完成的步骤，仅询问仍需我提供的信息或操作。
+请使用已发布的 APK，在我的电视上完整安装并配置 thedjchi/Shizuku 和 Screen Off TV。连接电视，验证正确的 fork，启动 Shizuku、授予权限，并按指南配置和读回两个应用的设置。逐项报告 JSON 中 required_installation_evidence 的证据。只有 Shizuku 正在运行，且 Screen Off TV 已获授权并就绪时，才能报告完成。如果受阻，请说明未完成的步骤，仅询问仍需我提供的信息或操作。
 ```
 
-安装只需 APK；下方构建说明仅用于源码开发。
+安装只需 APK，下方构建说明仅用于源码开发。
 
 ## 使用方法
 
-默认快捷操作为**快速按两下 Mute（静音键）**。第二次按下时立即识别操作，无需等待松开按键。
+默认快捷操作为**快速按两下 Mute（静音键）**。第二次按下按键时，应用立即响应，无需等待松开。
 
 1. 启动 Screen Off TV 服务，确认已就绪。
 2. 在常用播放器中播放音乐或视频，确认有声音。
@@ -69,7 +65,10 @@ https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-sourc
 
 ### 更改遥控按键
 
-按英语安装指南操作时，打开 **Settings → Remote key**，选择预设按键或 **Set custom remote key**。按下想使用的按键，再选择 **Confirm this key** 保存。确认后窗口会自动关闭。
+打开 **Settings → Remote key**：
+
+- **预设按键：**选择按键后立即保存。
+- **其他遥控按键：**先启动服务，选择 **Set custom remote key**，按下想使用的按键，再选择 **Confirm this key**。确认后窗口会自动关闭。
 
 使用简体中文界面时，对应入口为 **设置 → 遥控按键 → 设置自定义遥控按键**，保存按钮为 **确认使用此按键**。
 
@@ -79,16 +78,16 @@ https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-sourc
 
 | 模式 | 工作方式 |
 |---|---|
-| **Screen Off / Picture Off** — 默认 | 关闭屏幕，电视继续运行。需要固件支持通过 Shizuku 控制屏幕。 |
-| **关闭背光 / Brightness = -1** | 关闭背光，恢复画面时还原已保存的亮度。需要固件支持该亮度值；亮度 0 仅为最低亮度。 |
+| **Screen Off / Picture Off** — 默认 | 将屏幕切换为关闭状态，恢复正常状态时重新显示画面。电视继续运行。 |
+| **关闭背光 / Brightness = -1** | 使用特殊亮度值 `-1` 请求关闭背光，重新开启时恢复已保存的亮度。这与将亮度设为 `0` 不同。 |
 
-修改模式前先停止服务。两种模式均不发送关机或待机命令。能否继续播放声音取决于电视和播放器。
+两种模式均通过 Shizuku 操作，并需要电视支持。修改模式前先停止服务。应用不发送关机或待机命令。能否继续播放声音取决于电视和播放器。
 
 ## 随电视自动启动
 
 随电视启动选项默认开启。还需要在 Shizuku 中开启 **Start on boot**，并在电视启动后保持 Wi-Fi 可用。Screen Off TV 英语界面中的对应选项为 **Start when TV boots**。
 
-如果 Shizuku 启动较晚或连接中断，Screen Off TV 会继续等待并自动重新连接。屏幕控制和遥控输入均可用后，应用才显示就绪。如果已关闭自动启动，应用下次打开时会保留该选择。
+如果 Shizuku 启动较晚或连接中断，Screen Off TV 会继续等待并自动重新连接。只有能够控制屏幕并接收遥控按键时，应用才显示就绪。如果已关闭自动启动，应用下次打开时会保留该选择。
 
 参阅 [Shizuku 自启动设置](docs/INSTALL.zh-CN.md#5-设置-shizuku-开机自启动)和[重启后的检查方法](docs/INSTALL.zh-CN.md#9-验证画面声音及开机恢复)。
 
@@ -96,10 +95,9 @@ https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-sourc
 
 | 设备 | 结果 |
 |---|---|
-| Xiaomi TV A Pro 55 英寸 2026 款 | 日常使用运行稳定。 |
-| Xiaomi MiTV-MZTU0 — Android 14 | 使用 0.1.2 检查了界面、语言和设置。重启两次；第二次 Shizuku 和 Screen Off TV 均在打开应用前自动运行。 |
+| Xiaomi TV A Pro 55 inch 2026 | 在 Android 14 上运行稳定。使用 0.1.2 检查了界面、语言和设置。两次重启后，Shizuku 和 Screen Off TV 均在打开应用前自动运行。 |
 
-结果记录于 **2026 年 10 月 25 日**。尚未记录各设备的具体播放器和使用时长。测试范围见[测试详情](docs/TESTING.md)。
+结果记录于 **2026 年 10 月 25 日**。测试范围见[测试详情](docs/TESTING.md)。
 
 报告问题或其他电视的使用结果时，请提供电视型号、Android 版本、Shizuku 和 Screen Off TV 版本、播放器、息屏模式及实际现象。
 
@@ -111,7 +109,7 @@ https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-sourc
 
 ## 构建与测试
 
-当前版本：**0.1.3**（versionCode 3），源码与下载 APK 版本一致。
+当前版本：**0.1.3**。
 
 应用 ID：`com.thaivancuong93.screenofftv`。需要 JDK 17 和 Android SDK platform 35。请按本机环境设置 `JAVA_HOME`、`ANDROID_HOME`。
 

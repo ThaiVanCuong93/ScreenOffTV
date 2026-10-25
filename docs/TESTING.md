@@ -1,20 +1,20 @@
 # Screen Off TV 0.1.3 — verification
 
-Current version: **0.1.3 / versionCode 3**. The distributed APK uses `debugSignedRelease`, with the same Android debug signing certificate as previous builds. APK identity and SHA-256 are recorded in [install-profile.json](install-profile.json) and [SHA256SUMS](../dist/SHA256SUMS).
+Current version: **0.1.3**. The distributed APK uses `debugSignedRelease`, with the same Android debug signing certificate as previous builds. APK identity and SHA-256 are recorded in [install-profile.json](install-profile.json) and [SHA256SUMS](../dist/SHA256SUMS).
 
 ## Current checks — 2026-10-25
 
-Host verification passed: **16 unit tests, debug build, signed release build and UI-test APK compilation**. Lint completed with **0 errors and 23 warnings**; remaining warnings concern resources, icons and the untimed foreground wake lock. No connected tests were run for this revision.
+Host verification passed: **16 unit tests, debug build, signed release build and UI-test APK compilation**. Lint completed with **0 errors and 23 warnings**, remaining warnings concern resources, icons and the untimed foreground wake lock. No connected tests were run for this revision.
 
 | Check | Scope |
 |---|---|
-| Debug APK and signed release build | Build the current source; neither result is a test of physical screen control. |
+| Debug APK and signed release build | Build the current source, neither result is a test of physical screen control. |
 | Remote gesture unit tests | Single/double/hold, cancellation, reserved keys and off/on firing on the second DOWN without waiting for release. |
 | Connection supervisor unit tests | Retry failed connections, reconnect after input loss, retry binding timeouts, and stop without restarting when cancelled. |
 | Shell command unit tests | Read successful output, reject nonzero exit codes, and bound hung settings commands. |
 | IPC unit test | Success and failure results remain distinct. |
-| Android UI test APK | Compiled; not run against the TV for this revision. Includes cancelling key capture when the app leaves the foreground. |
-| Android lint | Run against the current source; see the generated report under `app/build/reports/`. |
+| Android UI test APK | Compiled, not run against the TV for this revision. Includes cancelling key capture when the app leaves the foreground. |
+| Android lint | Run against the current source, see the generated report under `app/build/reports/`. |
 
 The latest revision has **not** been tested on the TV. Reboot recovery, a delayed or restarted Shizuku server, physical RED input, backlight restoration and music/video audio continuity still need an on-device check. Earlier TV results below apply to 0.1.2, not this APK.
 
@@ -38,12 +38,13 @@ Results apply to the devices and configurations listed below.
 | Property | Observed value |
 |---|---|
 | Manufacturer | Xiaomi |
-| Model | MiTV-MZTU0 |
+| Device | Xiaomi TV A Pro 55 inch 2026 |
+| Android model identifier | MiTV-MZTU0 |
 | Android version | 14 |
 | Android API | 34 |
-| Connection | ADB; device network address omitted |
+| Connection | ADB, device network address omitted |
 
-The model and version were read from the connected TV using Android system properties. A device model identifies the test unit; another firmware revision may behave differently.
+The model and version were read from the connected TV using Android system properties. A device model identifies the test unit, another firmware revision may behave differently.
 
 ### Completed checks
 
@@ -54,7 +55,7 @@ The model and version were read from the connected TV using Android system prope
 | IPC result unit test | 1 passed | `ResultTest`: success and failure paths remain distinct. |
 | Android UI/resource tests on TV | 6 passed | AndroidJUnitRunner ended with `OK (6 tests)`. |
 | Android lint | Passed | `:app:lintDebugSignedDebug` completed successfully in the language implementation check. |
-| Live screenshots | Checked | Real localized home screens in `fastlane/metadata/android/`; installation screenshots in `docs/images/install/`. |
+| Live screenshots | Checked | Real localized home screens in `fastlane/metadata/android/`, installation screenshots in `docs/images/install/`. |
 | Installed version | Confirmed | TV package manager reported 0.1.2 / versionCode 2. |
 
 The six Android tests cover:
@@ -70,7 +71,7 @@ The UI tests do not turn the panel off, play a movie/music track or reboot the T
 
 ### Tests still needed for playback compatibility
 
-For each screen-off mode, record an actual player name/version, content type, panel result, audio continuity, ability to restore the picture and relevant firmware version. Boot recovery with configured Shizuku was tested below; the Shizuku-unavailable/delayed-beyond-timeout case remains unverified.
+For each screen-off mode, record an actual player name/version, content type, panel result, audio continuity, ability to restore the picture and relevant firmware version. Boot recovery with configured Shizuku was tested below, the Shizuku-unavailable/delayed-beyond-timeout case remains unverified.
 
 Playback compatibility requires a separate test with the player.
 
@@ -106,17 +107,17 @@ With JDK 17 and Android SDK platform 35 configured:
 
 Run the connected tests on an awake TV with no other UI automation running. The tests temporarily change language/start-on-boot preferences and restore their saved values.
 
-### Xiaomi TV A Pro 55-inch (2026)
+### Xiaomi TV A Pro 55 inch 2026
 
-Tested on **Xiaomi TV A Pro 55-inch (2026)** with stable operation, recorded on 2026-10-25. Player/version, usage duration, firmware and reboot details have not been recorded.
+Tested on **Xiaomi TV A Pro 55 inch 2026** with stable operation, recorded on 2026-10-25. Both reboots completed with Shizuku and Screen Off TV starting automatically before either app was opened.
 
 ### Fresh installation and boot recovery — 2026-10-25
 
 - Uninstalled Screen Off TV and Shizuku via TV Settings, confirmed the target packages were absent, then installed both validated APKs through ADB.
-- Installed Screen Off TV 0.1.2 / versionCode 2 and thedjchi/Shizuku 13.7.0-thedjchi / versionCode 1361. The fork home page reports server 13.6; this does not change the app version.
-- Granted Shizuku authorization to Screen Off TV; confirmed Ready, Mute double press, Screen Off / Picture Off and the app boot switch enabled. Fork Start on boot was also enabled; TCP was enabled, Watchdog disabled.
+- Installed Screen Off TV 0.1.2 / versionCode 2 and thedjchi/Shizuku 13.7.0-thedjchi / versionCode 1361. The fork home page reports server 13.6, this does not change the app version.
+- Granted Shizuku authorization to Screen Off TV, confirmed Ready, Mute double press, Screen Off / Picture Off and the app boot switch enabled. Fork Start on boot was also enabled, TCP was enabled, Watchdog disabled.
 - Pairing flow completed using screenshots/remote navigation after avoiding competing UiAutomation. The original workstation pairings were preserved.
-- Rebooted twice. In the first run the app UI was opened during observation, so that run alone does not isolate client auto-start.
+- Rebooted twice. The owner confirms that Shizuku and Screen Off TV started automatically before either app was opened after both reboots. Detailed system evidence for the second run follows.
 - In the second run, before opening either app, sys.boot_completed=1, shizuku_server had a PID and ScreenOffTVService was foreground. Android recorded allowStartForeground=BOOT_COMPLETED and createdFromFg=false. No PC starter or Start service click was used in that run. Opening the UI afterwards showed Ready.
 
 ![Ready after second reboot](images/testing/0.1.2-second-reboot-ready.png)

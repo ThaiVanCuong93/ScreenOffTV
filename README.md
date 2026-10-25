@@ -6,7 +6,7 @@
 
 Screen Off TV lets you **turn off the Android TV screen with your remote while music or video keeps playing**. Listen to music, podcasts, lectures or movie audio without keeping the screen on. The app uses **Shizuku** and supports English, Vietnamese and Simplified Chinese. Screen control and continued audio playback depend on the TV and player.
 
-Tested on **Xiaomi TV A Pro 55-inch (2026)** with stable operation.
+Tested on **Xiaomi TV A Pro 55 inch 2026** with stable operation.
 
 ![Screen Off TV interface in English](fastlane/metadata/android/en-US/images/tvScreenshots/1.png)
 
@@ -15,29 +15,27 @@ Tested on **Xiaomi TV A Pro 55-inch (2026)** with stable operation.
 - Turn the screen off and back on with a single press, double press or 0.6-second hold on the remote.
 - Choose Mute, Volume Up, Volume Down or learn another remote key. New keys are saved after confirmation and retain their original TV function.
 - Choose **Screen Off / Picture Off** or **Backlight off**.
-- Start automatically with the TV; this can be disabled in Settings.
+- Start automatically with the TV. You can disable this in Settings.
 - Navigate with the remote's arrow keys and OK.
 - Choose English, Vietnamese, Simplified Chinese or **Follow system**.
 
 ## Requirements
 
 - Android TV 8.0 or later.
-- Shizuku running and authorized for Screen Off TV.
-- Starting Shizuku through Wireless debugging as described in the guide requires Android 11 or later and a TV with **Wireless debugging** available.
+- Shizuku running, with Screen Off TV authorized to use it.
+- Android 11 or later with **Wireless debugging** to start Shizuku over Wi-Fi.
 
 Screen Off TV controls the display. It does not play music or video or add background playback to other apps.
 
 ## Download and install
 
-Current download: **0.1.3**, signed with an Android debug key.
+[**Download APK 0.1.3**](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.3.apk) · [SHA-256](dist/SHA256SUMS)
+
+The APK is signed with an Android debug key.
 
 ### Install it yourself
 
-1. Install and start the [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku) using the [illustrated installation guide](docs/INSTALL.en.md).
-2. Download [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk). Compare its SHA-256 with [SHA256SUMS](dist/SHA256SUMS).
-3. Install the APK, open Screen Off TV and select **Start service**.
-4. When Shizuku asks for permission, select **Allow all the time**. Wait for **Ready to control** and **Shizuku: running · authorized**.
-5. Open **Settings** to choose the remote key, press action, screen-off mode and language. Stop the service before changing screen-off modes. For automatic startup, enable the boot switches in both Shizuku and Screen Off TV.
+Install and start the apps using the [illustrated installation guide](docs/INSTALL.en.md).
 
 ### Ask an AI agent to install
 
@@ -45,16 +43,16 @@ Use an agent with ADB access and TV UI controls. Copy this prompt, then provide 
 
 ```text
 Read this guide and the APK profile it links to:
-https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
+https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/main/docs/AGENT-INSTALL.md
 
-Fully install and configure thedjchi/Shizuku and Screen Off TV on my TV using the published APKs. Connect to the TV, verify the correct fork, start Shizuku, grant authorization, configure both apps and read back their settings as instructed. Do not downgrade; preserve existing settings when updating. Report evidence for every required_installation_evidence item in the JSON profile. Report completion only when Shizuku is running and Screen Off TV is authorized and ready to control. If blocked, identify the unfinished step and ask only for the missing information or action you need from me.
+Fully install and configure thedjchi/Shizuku and Screen Off TV on my TV using the published APKs. Connect to the TV, verify the correct fork, start Shizuku, grant authorization, configure both apps and read back their settings as instructed. Report evidence for every required_installation_evidence item in the JSON profile. Report completion only when Shizuku is running and Screen Off TV is authorized and ready to control. If blocked, identify the unfinished step and ask only for the missing information or action you need from me.
 ```
 
-Installation only needs the APKs; the build section below is for source development.
+Installation only needs the APKs. The build section below is for source development.
 
 ## How to use
 
-The default shortcut is **Mute, pressed twice quickly**. The gesture fires on the second key-down without waiting for release.
+The default shortcut is **Mute, pressed twice quickly**. The app responds as soon as you press the key a second time, without waiting for release.
 
 1. Start the Screen Off TV service and check for **Ready to control**.
 2. Start music or a video in your usual player and confirm that sound is playing.
@@ -67,7 +65,10 @@ If audio stops, restore the picture and check the player. You can try the other 
 
 ### Change the remote key
 
-Open **Settings → Remote key** and select a preset or **Set custom remote key**. Press the desired key, then select **Confirm this key** to save it. Confirmation closes the dialog.
+Open **Settings → Remote key**:
+
+- **Preset key:** select a key to save it immediately.
+- **Another remote key:** start the service first, select **Set custom remote key**, press the desired key and select **Confirm this key**. Confirmation closes the dialog.
 
 See the [RED button walkthrough](docs/INSTALL.en.md#8-optional-red-button) for a step-by-step example.
 
@@ -75,16 +76,16 @@ See the [RED button walkthrough](docs/INSTALL.en.md#8-optional-red-button) for a
 
 | Mode | How it works |
 |---|---|
-| **Screen Off / Picture Off** — default | Turns off the display while the TV keeps running. Requires firmware that supports display control through Shizuku. |
-| **Backlight off / Brightness = -1** | Turns off the backlight and restores the saved brightness when the picture returns. Requires firmware support for this brightness value; brightness 0 is only the minimum level. |
+| **Screen Off / Picture Off** — default | Switches the display to its off state and restores its normal state to bring the picture back. The TV keeps running. |
+| **Backlight off / Brightness = -1** | Uses the special brightness value `-1` to request backlight off and restores the saved brightness when turned back on. This is different from setting brightness to `0`. |
 
-Stop the service before changing modes. Neither mode sends a power-off or standby command. Continued audio playback depends on the TV and player.
+Both modes use Shizuku and require TV support. Stop the service before changing modes. The app does not send a power-off or standby command. Continued audio playback depends on the TV and player.
 
 ## Start automatically with the TV
 
 **Start when TV boots** is enabled by default. Also enable **Start on boot** in Shizuku and keep Wi-Fi available after the TV boots.
 
-If Shizuku starts late or disconnects, Screen Off TV keeps waiting and reconnects automatically. The app reports ready only after display control and remote input are available. If you disabled automatic startup, the app preserves that choice when reopened.
+If Shizuku starts late or disconnects, Screen Off TV keeps waiting and reconnects automatically. The app reports ready only when it can control the screen and receive remote key presses. If you disabled automatic startup, the app preserves that choice when reopened.
 
 See [Shizuku startup setup](docs/INSTALL.en.md#5-enable-shizuku-start-on-boot) and [how to check after a reboot](docs/INSTALL.en.md#9-test-pictureaudio-and-boot-recovery).
 
@@ -92,10 +93,9 @@ See [Shizuku startup setup](docs/INSTALL.en.md#5-enable-shizuku-start-on-boot) a
 
 | Device | Result |
 |---|---|
-| Xiaomi TV A Pro 55-inch (2026) | Stable operation in everyday use. |
-| Xiaomi MiTV-MZTU0 — Android 14 | UI, languages and settings checked with 0.1.2. Two reboots performed; on the second, Shizuku and Screen Off TV started before either app was opened. |
+| Xiaomi TV A Pro 55 inch 2026 | Stable operation on Android 14. UI, languages and settings checked with 0.1.2. Shizuku and Screen Off TV started automatically before either app was opened after both reboots. |
 
-Results were recorded on **2026-10-25**. Specific players and usage durations have not been recorded for each device. See the [test details](docs/TESTING.md) for the scope of the checks.
+Results were recorded on **2026-10-25**. See the [test details](docs/TESTING.md) for the scope of the checks.
 
 When reporting a problem or results on another TV, include its model, Android version, Shizuku and Screen Off TV versions, player, screen-off mode and what happened.
 
@@ -107,7 +107,7 @@ If the TV language is unsupported, the app uses English. Your selection is saved
 
 ## Build and test
 
-Current version: **0.1.3** (versionCode 3), shared by the source and downloadable APK.
+Current version: **0.1.3**.
 
 Application ID: `com.thaivancuong93.screenofftv`. Requires JDK 17 and Android SDK platform 35. Configure `JAVA_HOME` and `ANDROID_HOME` for your machine.
 
