@@ -13,6 +13,16 @@ Hướng dẫn cài mới và cấu hình cả **thedjchi/Shizuku** và **Screen
 
 Tham khảo hướng dẫn: [Việt](INSTALL.md) · [Anh](INSTALL.en.md) · [Trung](INSTALL.zh-CN.md).
 
+## Đọc trạng thái và thao tác giao diện
+
+Áp dụng cho mọi công tắc, checkbox và mục lựa chọn trong cả hai ứng dụng:
+
+1. Đọc cây XML đầy đủ bằng trình phân tích XML hoặc công cụ hierarchy. Tìm đúng nhãn, đi lên hàng cài đặt chứa nhãn rồi tìm control tương ứng trong hàng đó. Nhãn và công tắc có thể là hai node anh em, không nhất thiết công tắc nằm trong node nhãn. Không cắt một khoảng ký tự quanh nhãn hoặc lấy giá trị `checked` gần nhất để suy ra trạng thái.
+2. Với Switch/CheckBox, đọc `checked` của đúng control có `checkable="true"`. Ví dụ `class="android.widget.Switch" checkable="true" checked="true"` nghĩa là đang bật. Bỏ qua `checked` trên TextView hoặc layout có `checkable="false"`. Không phụ thuộc thứ tự thuộc tính hoặc tên class duy nhất vì control có thể dùng class khác.
+3. Phân biệt các thuộc tính: `checked` là trạng thái chọn/bật của control checkable, `clickable` là khả năng bấm, `enabled` là khả năng tương tác, `focused` là vị trí focus. `clickable="false"` không có nghĩa đang tắt. Chỉ dùng `selected` hay nhãn On/Off khi giao diện thực sự dùng chúng để thể hiện giá trị, không coi focus hoặc tô sáng là bằng chứng đã bật.
+4. So sánh với giá trị cần đặt. Đã đúng thì không bấm. Chưa đúng thì thao tác một lần trên control hoặc hàng cài đặt có thể bấm, đọc XML mới rồi xác nhận lại đúng mục. Nếu có hộp thoại, xử lý và đọc lại kết quả trước khi thao tác tiếp.
+5. Không tìm thấy control, thiếu thuộc tính trạng thái hoặc không xác định được control thuộc mục nào thì ghi **chưa xác định**, không mặc định là tắt và không bấm tiếp để thử. Đọc lại hierarchy hoặc dùng công cụ khác, chỉ nhờ người dùng khi vẫn bị chặn.
+
 ## 1. Kết nối đúng TV
 
 ```bash

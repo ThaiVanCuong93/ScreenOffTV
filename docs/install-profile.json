@@ -1,5 +1,5 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "human_guide": "docs/INSTALL.md",
   "agent_guide": "docs/AGENT-INSTALL.md",
   "defaults": {
@@ -123,7 +123,15 @@
     "optional_tools": [
       "aapt",
       "apksigner"
-    ]
+    ],
+    "ui_state_reading": {
+      "scope": "All switches, checkboxes and selection controls in both apps.",
+      "locate": "Parse the full XML/hierarchy structurally. Find the label, its containing preference row and the associated control within that row. Label and control may be siblings. Do not infer state from fixed-length text slices, nearest checked attributes or attribute order.",
+      "read": "For a checkable control, read its own checked attribute with checkable=true. Ignore checked on non-checkable text/layout nodes. Support equivalent control classes, not only android.widget.Switch.",
+      "distinguish": "clickable=false does not mean off. enabled describes interaction availability and focused describes focus. Use selected or explicit On/Off labels only when that UI actually uses them as the setting value, never infer enabled state from focus or highlighting.",
+      "act": "If the observed value already matches the target, do not tap. Otherwise act once on the control or clickable preference row, handle any dialog, then obtain a fresh hierarchy and verify the same setting before acting again.",
+      "unknown": "Missing or ambiguous state is unknown, never false. Re-read or use another available tool before further toggling. Ask the user only when blocked."
+    }
   },
   "required_installation_evidence": [
     {
