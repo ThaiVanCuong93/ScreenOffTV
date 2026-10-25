@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "human_guide": "docs/INSTALL.md",
   "agent_guide": "docs/AGENT-INSTALL.md",
   "defaults": {
@@ -66,16 +66,6 @@
     "owner_reports_using_fork": true,
     "maintenance_status": "Maintainer currently pauses maintenance; recheck release status before future updates"
   },
-  "completion_checks": [
-    "package IDs, installed versions and signing identity match the selected artifacts; preserve a newer installed version instead of downgrading",
-    "Shizuku running and Screen Off TV authorized and ready",
-    "fresh install uses defaults; updates preserve existing settings unless explicitly changed by user",
-    "both boot switches match requested configuration; enabled does not mean boot recovery tested",
-    "custom key only changed when requested; physical key verified only with actual remote input",
-    "if playback test requested: actual screen off/on and audio continuity observed",
-    "if reboot test requested: both services inspected before opening apps or starting manually",
-    "if no tests requested: skip all test/reboot/screen-off actions and report not tested"
-  ],
   "human_guides": {
     "vi": "docs/INSTALL.md",
     "en": "docs/INSTALL.en.md",
@@ -99,7 +89,7 @@
       "direct_apk_download_url"
     ],
     "installed_newer_than_target": "preserve; do not downgrade automatically",
-    "existing_install_settings": "preserve language, key, gesture, display mode, both boot switches and TCP/Watchdog unless user requests changes",
+    "existing_install_settings": "Mandatory: record settings before updating, preserve them, then read back and compare language, key, gesture, display mode, both boot switches and TCP/Watchdog. Change only explicitly requested fields; never clear data or uninstall to bypass an update error.",
     "fresh_install_settings": "use defaults; enable Shizuku boot startup only when supported by the startup method",
     "no_test_request": "Skip only physical shortcut/screen/audio tests, reboot and automated tests. Still connect to TV, verify thedjchi fork, start Shizuku, authorize Screen Off TV, open settings and verify ready state.",
     "historical_fields": [
@@ -123,13 +113,26 @@
       "apksigner"
     ],
     "install_build_toolchain_for_optional_checks": false,
-    "installed_shizuku_identity": "Package name or icon is insufficient. Match installed base.apk SHA-256 to shizuku.sha256, or verify the signing certificate against shizuku.certificate_sha256 with existing tools. Report unverified/conflicting identity as incomplete."
+    "installed_shizuku_identity": "Package name or icon is insufficient. Match installed base.apk SHA-256 to shizuku.sha256, or verify the signing certificate against shizuku.certificate_sha256 with existing tools. Report unverified/conflicting identity as incomplete.",
+    "initial_state": "Inspect each app separately: verified and running -> preserve and read settings; verified but stopped -> start and configure; missing or older -> download/install APK. Never reinstall merely to fix a stopped service.",
+    "user_profile": "Identify intended Android user and full per-user package UID for both apps. Match the Shizuku authorization entry to Screen Off TV package and UID; labels such as new_user (10) alone are insufficient. Do not grant all profiles.",
+    "ui_navigation": "Resolve launcher activity rather than guessing. Read current UI, tap preference row if its switch is not clickable, then refresh hierarchy after each UI-changing action. Never reuse stale bounds. During Shizuku pairing-code detection do not use UiAutomation/uiautomator dump; use remote/screenshots or request human pairing, then verify server PID and running UI. PC adb pair does not pair Shizuku itself."
   },
   "required_installation_evidence": [
     {
       "id": "tv_connection",
       "required": true,
       "evidence": "ADB device state, actual model and Android/API"
+    },
+    {
+      "id": "target_profile",
+      "required": true,
+      "evidence": "Intended Android user ID, package IDs and full per-user installed UIDs for both apps; Shizuku authorization entry matched to Screen Off TV package/UID, not label alone."
+    },
+    {
+      "id": "version_policy",
+      "required": true,
+      "evidence": "Before/after versionCode for each app, selected APK source/hash when installed, and action taken (preserved/installed/updated). No downgrade, uninstall or data reset without explicit user instruction."
     },
     {
       "id": "shizuku_fork",
@@ -144,7 +147,7 @@
     {
       "id": "shizuku_settings",
       "required": true,
-      "evidence": "Observed Start on boot value; unsupported or blocked setup reported explicitly"
+      "evidence": "Read-back Start on boot and existing TCP/Watchdog values. Record supported/unsupported and startup method; unsupported may pass only when no requested boot requirement is left unmet. A boot switch alone is not a reboot test."
     },
     {
       "id": "screen_off_ready",
@@ -154,8 +157,39 @@
     {
       "id": "screen_off_settings",
       "required": true,
-      "evidence": "Settings opened and remote key, press action, display mode, language and boot switch read back; preserve existing choices for updates"
+      "evidence": "Read back all five fields: remote key, press action, boot switch, screen mode and language. Compare with pre-update baseline or fresh-install defaults."
+    },
+    {
+      "id": "settings_preserved",
+      "required": true,
+      "evidence": "For updates: before/after settings compared, with only user-requested changes. For fresh installs: explicitly record fresh install and verified defaults. If baseline cannot be read, report blocked rather than claim preservation."
     }
   ],
-  "completion_rule": "Every required_installation_evidence item must be observed in this run. Otherwise report incomplete with the missing step and reason. Installing/opening Screen Off TV alone is not completion; do not use historical verification fields as current evidence."
+  "completion_rule": "Single source of truth: required_installation_evidence. Report every item by ID with current-run evidence. Overall ready only when every required item is passed and no requested configuration remains unmet; otherwise incomplete with missing step/reason. Historical verification is never current evidence. Report optional tests separately, including not_tested.",
+  "optional_verification": {
+    "physical_key": "Only when requested: actual remote input observed; ADB key events are insufficient.",
+    "screen_audio": "Only when requested: real panel off/on and continuing audio observed with named player; ADB screenshots are insufficient.",
+    "reboot": "Only when requested: verify boot completion, Shizuku PID and Screen Off TV service before manually opening either app, then confirm ready UI.",
+    "report": "Report each as passed, failed or not_tested. Never infer test success from configured settings."
+  },
+  "evidence_report": {
+    "item_fields": [
+      "id",
+      "status",
+      "observed",
+      "source",
+      "reason_if_not_passed"
+    ],
+    "status_values": [
+      "passed",
+      "failed",
+      "blocked"
+    ],
+    "source": "Current-run command output or current UI state; redact pairing codes and other secrets.",
+    "overall_values": [
+      "ready",
+      "incomplete"
+    ],
+    "tests": "Report optional_verification separately; ready means configured and ready, not physical/reboot tests passed."
+  }
 }

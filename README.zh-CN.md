@@ -49,7 +49,7 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 阅读以下指南及其中链接的 APK 配置文件：
 https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
 
-请使用已发布的 APK，在我的电视上完整安装并配置 thedjchi/Shizuku 和 Screen Off TV。连接电视，验证正确的 fork，启动 Shizuku、授予权限，并按指南配置和读回两个应用的设置。更新时保留已有设置。只有 Shizuku 正在运行，且 Screen Off TV 已获授权并就绪时，才能报告完成。如果受阻，请说明未完成的步骤，仅询问仍需我提供的信息或操作。
+请使用已发布的 APK，在我的电视上完整安装并配置 thedjchi/Shizuku 和 Screen Off TV。连接电视，验证正确的 fork，启动 Shizuku、授予权限，并按指南配置和读回两个应用的设置。不要降级；更新时保留已有设置。逐项报告 JSON 中 required_installation_evidence 的证据。只有 Shizuku 正在运行，且 Screen Off TV 已获授权并就绪时，才能报告完成。如果受阻，请说明未完成的步骤，仅询问仍需我提供的信息或操作。
 ```
 
 安装只需 APK；下方构建说明仅用于源码开发。
@@ -105,28 +105,7 @@ https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-sourc
 
 ## 语言
 
-默认使用**跟随系统**。在 **设置 → 语言** 中选择 **跟随系统**、**Tiếng Việt**、**English** 或 **简体中文**。英语界面中的入口为 **Settings → Language**，跟随系统选项为 **Follow system**。
-
-如果不支持电视的系统语言，应用使用英语。选择会被保存。切换语言不会更改遥控设置，也不会重启正在运行的服务。
-
-## 构建与测试
-
-当前版本：**0.1.3**（versionCode 3），源码与下载 APK 版本一致。
-
-应用 ID：`com.thaivancuong93.screenofftv`。需要 JDK 17 和 Android SDK platform 35。请按本机环境设置 `JAVA_HOME`、`ANDROID_HOME`。
-
-`dist/` 中的 APK 使用 release 构建，并以 Android 调试密钥签名。构建命令：
-
-```bash
-./gradlew :app:assembleDebugSignedRelease
-```
-
-输出：`app/build/outputs/apk/debugSigned/release/app-debugSigned-release.apk`。
-
-构建 debug APK 并运行单元测试：
-
-```bash
-./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
+默认使用**跟随系统**。在 **设置 → 语言** 中选择 **跟随系统**、**Tiếng Việt**、**English** 或 **简体中文**。英语界面中的入口为 **Settings → Language**，跟随系统选项为 **Follow…281 tokens truncated…n./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
 ```
 
 APK 位于 `app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`，使用 Android 调试密钥签名。

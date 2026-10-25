@@ -47,7 +47,7 @@ Use an agent with ADB access and TV UI controls. Copy this prompt, then provide 
 Read this guide and the APK profile it links to:
 https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
 
-Fully install and configure thedjchi/Shizuku and Screen Off TV on my TV using the published APKs. Connect to the TV, verify the correct fork, start Shizuku, grant authorization, configure both apps and read back their settings as instructed. Preserve existing settings when updating. Report completion only when Shizuku is running and Screen Off TV is authorized and ready to control. If blocked, identify the unfinished step and ask only for the missing information or action you need from me.
+Fully install and configure thedjchi/Shizuku and Screen Off TV on my TV using the published APKs. Connect to the TV, verify the correct fork, start Shizuku, grant authorization, configure both apps and read back their settings as instructed. Do not downgrade; preserve existing settings when updating. Report evidence for every required_installation_evidence item in the JSON profile. Report completion only when Shizuku is running and Screen Off TV is authorized and ready to control. If blocked, identify the unfinished step and ask only for the missing information or action you need from me.
 ```
 
 Installation only needs the APKs; the build section below is for source development.
