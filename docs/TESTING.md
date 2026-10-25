@@ -1,9 +1,39 @@
-# Screen Off TV 0.1.2 — test evidence
+# Screen Off TV 0.1.3 — verification
+
+Current version: **0.1.3 / versionCode 3**. The distributed APK uses `debugSignedRelease`, with the same Android debug signing certificate as previous builds. APK identity and SHA-256 are recorded in [install-profile.json](install-profile.json) and [SHA256SUMS](../dist/SHA256SUMS).
+
+## Current checks — 2026-10-25
+
+Host verification passed: **16 unit tests, debug build, signed release build and UI-test APK compilation**. Lint completed with **0 errors and 23 warnings**; remaining warnings concern resources, icons and the untimed foreground wake lock. No connected tests were run for this revision.
+
+| Check | Scope |
+|---|---|
+| Debug APK and signed release build | Build the current source; neither result is a test of physical screen control. |
+| Remote gesture unit tests | Single/double/hold, cancellation, reserved keys and off/on firing on the second DOWN without waiting for release. |
+| Connection supervisor unit tests | Retry failed connections, reconnect after input loss, retry binding timeouts, and stop without restarting when cancelled. |
+| Shell command unit tests | Read successful output, reject nonzero exit codes, and bound hung settings commands. |
+| IPC unit test | Success and failure results remain distinct. |
+| Android UI test APK | Compiled; not run against the TV for this revision. Includes cancelling key capture when the app leaves the foreground. |
+| Android lint | Run against the current source; see the generated report under `app/build/reports/`. |
+
+The latest revision has **not** been tested on the TV. Reboot recovery, a delayed or restarted Shizuku server, physical RED input, backlight restoration and music/video audio continuity still need an on-device check. Earlier TV results below apply to 0.1.2, not this APK.
+
+Double press is recognized on the second DOWN event. The app adds no release wait or delayed double-press confirmation. Consecutive double presses also have no extra 300 ms dead period. In the default Picture Off mode, display control precedes notification updates. The brightness compatibility mode also needs firmware settings operations. Physical panel response time has not been measured.
+
+To repeat the host checks:
+
+```bash
+./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest :shizuku-service:testDebugUnitTest :app:assembleDebugSignedDebugAndroidTest :app:lintDebugSignedDebug :app:assembleUnsignedRelease :app:assembleDebugSignedRelease
+```
+
+Run connected tests or reboot/screen tests only when requested. The checks above do not install an APK on the TV.
+
+## Historical results — Screen Off TV 0.1.2
 
 Recorded on 2026-10-25. Application ID: `com.thaivancuong93.screenofftv`, versionCode 2.
 Results apply to the devices and configurations listed below.
 
-## Device
+### Device
 
 | Property | Observed value |
 |---|---|
@@ -15,7 +45,7 @@ Results apply to the devices and configurations listed below.
 
 The model and version were read from the connected TV using Android system properties. A device model identifies the test unit; another firmware revision may behave differently.
 
-## Completed checks
+### Completed checks
 
 | Check | Result | Evidence / scope |
 |---|---|---|
@@ -38,13 +68,13 @@ The six Android tests cover:
 
 The UI tests do not turn the panel off, play a movie/music track or reboot the TV. A live service under continuous media playback was not exercised by those tests.
 
-## Tests still needed for playback compatibility
+### Tests still needed for playback compatibility
 
 For each screen-off mode, record an actual player name/version, content type, panel result, audio continuity, ability to restore the picture and relevant firmware version. Boot recovery with configured Shizuku was tested below; the Shizuku-unavailable/delayed-beyond-timeout case remains unverified.
 
 Playback compatibility requires a separate test with the player.
 
-## Compatibility report template
+### Compatibility report template
 
 ```text
 Screen Off TV version:
@@ -64,7 +94,7 @@ Reboot/start-on-boot result, if tested:
 Other observations:
 ```
 
-## Reproduce the automated checks
+### Reproduce the automated checks
 
 With JDK 17 and Android SDK platform 35 configured:
 
@@ -76,11 +106,11 @@ With JDK 17 and Android SDK platform 35 configured:
 
 Run the connected tests on an awake TV with no other UI automation running. The tests temporarily change language/start-on-boot preferences and restore their saved values.
 
-## Xiaomi TV A Pro 55-inch (2026)
+### Xiaomi TV A Pro 55-inch (2026)
 
 Tested on **Xiaomi TV A Pro 55-inch (2026)** with stable operation, recorded on 2026-10-25. Player/version, usage duration, firmware and reboot details have not been recorded.
 
-## Fresh installation and boot recovery — 2026-10-25
+### Fresh installation and boot recovery — 2026-10-25
 
 - Uninstalled Screen Off TV and Shizuku via TV Settings, confirmed the target packages were absent, then installed both validated APKs through ADB.
 - Installed Screen Off TV 0.1.2 / versionCode 2 and thedjchi/Shizuku 13.7.0-thedjchi / versionCode 1361. The fork home page reports server 13.6; this does not change the app version.

@@ -30,7 +30,11 @@ class RemoteGestureDetector {
             }
             Mode.Hold -> false
         }
-        if (trigger) { fired = true; blockedUntil = now + 300L }
+        if (trigger) {
+            fired = true
+            // Two complete presses already delimit a double gesture. Do not suppress the next pair.
+            blockedUntil = if (mode == Mode.Double) now else now + 300L
+        }
         return trigger
     }
 

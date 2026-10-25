@@ -20,15 +20,7 @@ class DisplayControlService : IDisplayControl.Stub() {
         const val BRIGHTNESS_MODE_AUTO = 1
     }
 
-    private val shLock = Object()
-    private var _shProcess: Process? = null
-    val shProcess: Process
-        get() = synchronized(shLock) {
-            if (_shProcess?.isAlive == true) return@synchronized _shProcess!!
-            Runtime.getRuntime().exec(arrayOf("sh")).also {
-                _shProcess = it
-            }
-        }
+    private val settingsCommands = ShellCommandRunner()
 
     private val primaryDisplayToken: IBinder by lazy { resolvePrimaryDisplayToken() }
 
@@ -66,7 +58,7 @@ class DisplayControlService : IDisplayControl.Stub() {
         try {
             val displayToken = getPrimaryPhysicalDisplayToken()
             if (!SurfaceControlProxy.setDisplayBrightness(displayToken, brightness)) {
-                return UnitResult.Err(UnsupportedOperationException("TV không hỗ trợ điều chỉnh độ sáng bằng cách này."))
+                return UnitResult.Err(UnsupportedOperationException("This TV does not support brightness control with this method."))
             }
         } catch (e: Exception) {
             return UnitResult.Err(e)
@@ -74,35 +66,19 @@ class DisplayControlService : IDisplayControl.Stub() {
         return UnitResult.Ok()
     }
 
-    override fun setBrightnessToSetting(brightness: Int): UnitResult {
-        val output = shProcess.outputStream
-        synchronized(shLock) {
-            output.write("settings put system screen_brightness $brightness\n".toByteArray())
-            output.flush()
-        }
-        return UnitResult.Ok()
-    }
+    override fun setBrightnessToSetting(brightness: Int): UnitResult = try {
+        settingsCommands.putSystemInt("screen_brightness", brightness)
+        UnitResult.Ok()
+    } catch (e: Exception) { UnitResult.Err(e) }
 
-    override fun setBrightnessModeToSetting(mode: Int): UnitResult {
-        if (mode != BRIGHTNESS_MODE_MANUAL && mode != BRIGHTNESS_MODE_AUTO) {
-            return UnitResult.Err(
-                IllegalArgumentException("mode should be 0 or 1")
-            )
-        }
-        val output = shProcess.outputStream
-        synchronized(shLock) {
-            output.write("settings put system screen_brightness_mode $mode\n".toByteArray())
-            output.flush()
-        }
-        return UnitResult.Ok()
-    }
+    override fun setBrightnessModeToSetting(mode: Int): UnitResult = try {
+        require(mode == BRIGHTNESS_MODE_MANUAL || mode == BRIGHTNESS_MODE_AUTO) { "mode should be 0 or 1" }
+        settingsCommands.putSystemInt("screen_brightness_mode", mode)
+        UnitResult.Ok()
+    } catch (e: Exception) { UnitResult.Err(e) }
 
     override fun destroy() {
         Log.d(TAG, "destroy: $TAG")
-        synchronized(shLock) {
-            _shProcess?.destroy()
-            _shProcess = null
-        }
         exitProcess(0)
     }
 

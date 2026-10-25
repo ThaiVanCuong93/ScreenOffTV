@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name" translatable="false">Screen Off TV</string>
     <string name="tv_settings">Cài đặt TV</string>
     <string name="status_heading">TRẠNG THÁI</string>
     <string name="remote_heading">ĐIỀU KHIỂN BẰNG REMOTE</string>
@@ -122,4 +121,7 @@
     <string name="str_ExceptionWhenAccessShizukuRemote_description">Hãy kiểm tra Shizuku đã chạy và Screen Off TV đã được cấp quyền.</string>
     <string name="str_SystemUnsupportedBrightnessSettings_name">TV không hỗ trợ cài đặt độ sáng</string>
     <string name="str_SystemUnsupportedBrightnessSettings_description">Hãy thử chế độ Screen Off / Picture Off trong Cài đặt.</string>
+    <string name="waiting_shizuku">Đang chờ Shizuku chạy và được cấp quyền. Dịch vụ sẽ tự kết nối lại.</string>
+    <string name="connection_retrying">Kết nối bị ngắt hoặc chưa sẵn sàng. Đang tự kết nối lại…</string>
+    <string name="brightness_restore_failed">Đã bật hình nhưng chưa khôi phục được cài đặt độ sáng. Hãy kiểm tra độ sáng trên TV.</string>
 </resources>

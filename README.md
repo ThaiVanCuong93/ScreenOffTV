@@ -29,10 +29,10 @@ Screen Off TV controls the display. It does not play music or video or add backg
 
 ## Download and install
 
-Current download: **0.1.2**, signed with an Android debug key.
+Current download: **0.1.3**, signed with an Android debug key.
 
 1. Install and start the [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku) using the [illustrated installation guide](docs/INSTALL.en.md).
-2. Download [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk). Compare its SHA-256 with [SHA256SUMS](dist/SHA256SUMS).
+2. Download [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk). Compare its SHA-256 with [SHA256SUMS](dist/SHA256SUMS).
 3. Install the APK, open Screen Off TV and select **Start service**.
 4. When Shizuku asks for permission, select **Allow all the time**. Wait for **Ready to control** and **Shizuku: running · authorized**.
 5. Open **Settings** to choose the remote key, press action, screen-off mode and language. Stop the service before changing screen-off modes.
@@ -41,7 +41,7 @@ You can also build the APK using the instructions below.
 
 ## How to use
 
-The default shortcut is **Mute, pressed twice quickly**.
+The default shortcut is **Mute, pressed twice quickly**. The gesture fires on the second key-down without waiting for release.
 
 1. Start the Screen Off TV service and check for **Ready to control**.
 2. Start music or a video in your usual player and confirm that sound is playing.
@@ -54,7 +54,7 @@ If audio stops, restore the picture and check the player. You can try the other 
 
 ### Change the remote key
 
-Open **Settings → Remote key** and select a preset or **Set custom remote key** (**Learn another remote key** in 0.1.2). Press the desired key, then select **Confirm this key** to save it. Starting with **0.1.3**, confirmation closes the dialog.
+Open **Settings → Remote key** and select a preset or **Set custom remote key**. Press the desired key, then select **Confirm this key** to save it. Confirmation closes the dialog.
 
 See the [RED button walkthrough](docs/INSTALL.en.md#8-optional-red-button) for a step-by-step example.
 
@@ -71,7 +71,7 @@ Stop the service before changing modes. Neither mode sends a power-off or standb
 
 **Start when TV boots** is enabled by default. Also enable **Start on boot** in Shizuku and keep Wi-Fi available after the TV boots.
 
-If Shizuku starts late and Screen Off TV reports an error, wait for Shizuku to run and restart the app service. If you disabled automatic startup, the app preserves that choice when reopened.
+If Shizuku starts late or disconnects, Screen Off TV keeps waiting and reconnects automatically. The app reports ready only after display control and remote input are available. If you disabled automatic startup, the app preserves that choice when reopened.
 
 See [Shizuku startup setup](docs/INSTALL.en.md#5-enable-shizuku-start-on-boot) and [how to check after a reboot](docs/INSTALL.en.md#9-test-pictureaudio-and-boot-recovery).
 
@@ -94,11 +94,19 @@ If the TV language is unsupported, the app uses English. Your selection is saved
 
 ## Build and test
 
-Current source: **0.1.3** (versionCode 3). The APK linked for download above is **0.1.2**.
+Current version: **0.1.3** (versionCode 3), shared by the source and downloadable APK.
 
 Application ID: `com.thaivancuong93.screenofftv`. Requires JDK 17 and Android SDK platform 35. Configure `JAVA_HOME` and `ANDROID_HOME` for your machine.
 
-Build the APK and run unit tests:
+The APK in `dist/` is a release build signed with the Android debug key. To build it:
+
+```bash
+./gradlew :app:assembleDebugSignedRelease
+```
+
+Output: `app/build/outputs/apk/debugSigned/release/app-debugSigned-release.apk`.
+
+Build a debug APK and run unit tests:
 
 ```bash
 ./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest

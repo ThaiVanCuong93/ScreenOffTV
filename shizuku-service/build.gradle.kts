@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.junit)
 
     implementation(project(":hidden-api"))
     implementation(project(":ipc"))

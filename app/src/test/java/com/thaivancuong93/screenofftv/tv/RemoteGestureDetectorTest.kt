@@ -21,6 +21,23 @@ class RemoteGestureDetectorTest {
         assertFalse(detector.onKey(2, 320, RemoteGestureDetector.Mode.Double))
     }
 
+    @Test fun doublePressTogglesImmediatelyOnEachSecondDownWithoutWaitingForRelease() {
+        val detector = RemoteGestureDetector()
+        var screenOn = true
+        fun key(value: Int, time: Long) {
+            if (detector.onKey(value, time, RemoteGestureDetector.Mode.Double)) screenOn = !screenOn
+        }
+        key(1, 100); key(0, 110)
+        assertTrue(screenOn)
+        key(1, 120)
+        assertFalse(screenOn) // No release or hold timeout has occurred.
+        key(0, 130)
+        key(1, 140); key(0, 150)
+        assertFalse(screenOn)
+        key(1, 160)
+        assertTrue(screenOn) // Even a rapid second pair restores immediately; no extra 300 ms dead period.
+    }
+
     @Test fun slowDoublePressDoesNotFire() {
         val detector = RemoteGestureDetector()
         assertFalse(detector.onKey(1, 100, RemoteGestureDetector.Mode.Double))

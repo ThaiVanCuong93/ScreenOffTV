@@ -11,15 +11,15 @@ You need a TV connected to Wi-Fi, its remote, and either a computer with [Google
 | App | Project | Download |
 |---|---|---|
 | TV-compatible Shizuku fork, 13.7.0-thedjchi | [Release](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi) | [APK](https://github.com/thedjchi/Shizuku/releases/download/v13.7.0-thedjchi/shizuku-v13.7.0-thedjchi.apk) |
-| Screen Off TV 0.1.2 | [Repository APK page](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/main/dist/Screen-Off-TV-0.1.2.apk) | [APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk) |
+| Screen Off TV 0.1.3 | [Repository APK page](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk) | [APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk) |
 
 On GitHub's APK page choose Download raw file. Compare SHA-256 with `sha256sum FILE.apk` on Linux or `Get-FileHash FILE.apk -Algorithm SHA256` in PowerShell. Do not install an HTML page renamed to APK.
 
 ```text
 shizuku-v13.7.0-thedjchi.apk
 6ea6dee65d5ddc626b6b75b2c2f67f8cc547fa47d7b437e6892639c37eaffe43
-Screen-Off-TV-0.1.2.apk
-96860596bfaec0f69f3f98f5f73f2b96d6f0fea57abe067cbed5d58ff5244fd4
+Screen-Off-TV-0.1.3.apk
+74b80f20adcba6c4e91034b3e581b672dd01c285e5ad879dfadf6d1816cb4b36
 ```
 
 ## 2. Enable Developer options and debugging
@@ -81,14 +81,14 @@ Keep Wi-Fi available after reboot. Use firmware-specific app background controls
 
 The screenshot shows TCP and Watchdog enabled. TCP is not required on every TV. Watchdog can restart Shizuku if its service stops; it does not replace startup on boot.
 
-**Note:** Automatic startup needs the connection in step 4, Start on boot enabled and Wi-Fi available after boot. Startup time depends on the TV and Wi-Fi connection. Screen Off TV currently waits around 30 seconds for Shizuku. If Shizuku starts later, wait until it is ready and restart the Screen Off TV service. Check automatic startup in step 9.
+**Note:** Automatic startup needs the connection in step 4, Start on boot enabled and Wi-Fi available after boot. Startup time depends on the TV and Wi-Fi connection. Screen Off TV keeps waiting and connects automatically when Shizuku is ready, even after more than 30 seconds. Failed service connections are retried automatically. Check automatic startup in step 9.
 
 ## 6. Install and authorize Screen Off TV
 
 Install its APK through the USB flow in step 3 or:
 
 ```bash
-adb -s TV_SERIAL install Screen-Off-TV-0.1.2.apk
+adb -s TV_SERIAL install Screen-Off-TV-0.1.3.apk
 ```
 
 Open Screen Off TV → Start service. A fresh install may initially report Shizuku permission needed:
@@ -121,9 +121,9 @@ Screen Off TV has its own boot switch. Enable Shizuku's **Start on boot** in ste
 
 The default shortcut is **Mute, double press**. To use the RED button:
 
-1. Start the service, then open **Settings → Remote key → Set custom remote key** (called **Learn another remote key** in 0.1.2).
+1. Start the service, then open **Settings → Remote key → Set custom remote key**.
 2. In **Learn a remote key**, press RED once on the remote. Do not use Power, OK, Back or navigation keys.
-3. When **Key detected** appears, select **Confirm this key** to save it, or **Try another key** to choose again. In 0.1.3, confirmation closes the dialog.
+3. When **Key detected** appears, select **Confirm this key** to save it, or **Try another key** to choose again. Confirmation closes the dialog.
 4. Keep **Press action → Double press** for the default gesture. Open **Test remote key** and press RED once to check reception.
 
 ![Key detected; select Confirm this key to save](images/install/set-red_key_en.png)
@@ -147,7 +147,7 @@ Screen Off TV **0.1.2** was rebooted twice on 2026-10-25. On the second reboot, 
 | Screen Off TV does not start after reboot | Check authorization, the app's Start when TV boots setting and whether Shizuku started automatically. |
 | Shizuku cannot connect | Check Wi-Fi, USB debugging and Wireless debugging. |
 | Permission denied | Start the service and select Allow all the time in Shizuku; check authorized apps if previously denied. |
-| Shizuku ready but app timed out | Wait for Shizuku, then restart the app service. Automatic startup did not pass in that run. |
+| Shizuku ready but app timed out | Wait for automatic reconnection. If the error persists, record the displayed message and check Shizuku authorization. |
 | Playback pauses | Restore the picture and check the player; continued playback depends on the player. |
 
 Sources: [fork](https://github.com/thedjchi/Shizuku), [setup](https://github.com/thedjchi/Shizuku/wiki/Setup), [features](https://github.com/thedjchi/Shizuku/wiki/Features), [Google ADB](https://developer.android.com/tools/adb). See [test evidence](TESTING.md) and [agent runbook](AGENT-INSTALL.md).

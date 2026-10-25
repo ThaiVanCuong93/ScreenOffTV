@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -99,7 +98,6 @@ class ScreenOffTVService : LifecycleService() {
 
             volumeKeyEventShizukuHost?.wake()
 
-            if (requestScreenOn) notificationHost.notify(requestScreenOn)
         }
     }
 
@@ -109,7 +107,6 @@ class ScreenOffTVService : LifecycleService() {
         solutionDependencyManager = SolutionDependencyManager(this).also {
             it.updateImmediately()
         }
-        screenState.update { ScreenState.On }
         val notification = notificationHost.notify(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(NotificationHost.NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
@@ -166,149 +163,136 @@ class ScreenOffTVService : LifecycleService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    var processArgsJob: Job? = null
-
     private fun processArgs(intent: Intent?) {
-        if (processArgsJob?.isActive == true) return
-        processArgsJob = lifecycleScope.launch {
-            initializeJob?.join()
+        val action = intent?.getIntExtra(EXTRA_SCREEN, EXTRA_VALUE_INVALID) ?: return
+        if (action !in EXTRA_VALUE_SCREEN_ON..EXTRA_VALUE_SCREEN_SWITCH) return
+        lifecycleScope.launch(Dispatchers.Main.immediate) {
             if (state.value != State.Prepared) return@launch
-
-            intent?.getIntExtra(EXTRA_STOP, EXTRA_VALUE_INVALID)?.let {
-                if (it == EXTRA_VALUE_STOP) Log.d(TAG, "request stop service")
+            when (action) {
+                EXTRA_VALUE_SCREEN_ON -> if (!isScreenOn) turnScreenOn()
+                EXTRA_VALUE_SCREEN_OFF -> if (isScreenOn) turnScreenOff()
+                EXTRA_VALUE_SCREEN_SWITCH -> if (isScreenOn) turnScreenOff() else turnScreenOn()
             }
-            intent?.getIntExtra(EXTRA_SCREEN, EXTRA_VALUE_INVALID)?.let {
-                Log.d(TAG, "EXTRA_SCREEN: $it")
-                when (it) {
-                    EXTRA_VALUE_SCREEN_ON -> lifecycleScope.launch(Dispatchers.Main) {
-                        if (!isScreenOn) {
-                            updateHostState(true)
-                            turnScreenOn()
-                        }
-                    }
-
-                    EXTRA_VALUE_SCREEN_OFF -> lifecycleScope.launch(Dispatchers.Main) {
-                        if (isScreenOn) {
-                            updateHostState(false)
-                            turnScreenOff()
-                        }
-                    }
-
-                    EXTRA_VALUE_SCREEN_SWITCH -> lifecycleScope.launch(Dispatchers.Main) {
-                        if (isScreenOn) {
-                            updateHostState(false)
-                            turnScreenOff()
-                        } else {
-                            updateHostState(true)
-                            turnScreenOn()
-                        }
-                    }
-
-                    else -> Unit
-                }
-            }
-
         }
     }
 
+    private var stopping = false
     var initializeJob: Job? = null
 
     private fun initialize() {
         if (initializeJob?.isActive == true) return
         initializeJob = lifecycleScope.launch(Dispatchers.Main) {
-            try {
-            lastError.value = null
-            state.update { State.Created }
-
-            if (Shizuku.pingBinder() && checkShizukuPermission()) {
-                bindEventsProviderService()
-                bindDisplayControlService()
-            }
-            val settingRepository = SyncSettingsRepository(settingsDataStore)
-            settingRepository.update()
-            loadFeatureFromSettings(settingRepository)
-
-            withTimeout(30000) {
-                while (!Shizuku.pingBinder()) delay(25)
-            }
-            solutionDependencyManager.updateImmediately()
-            if (!solutionDependencyManager.state.value.isShizukuPermissionGranted) {
-                lastError.value = UiText(R.string.shizuku_unavailable)
-                state.update { State.Error }
-                stopSelf()
-                return@launch
-            }
-
-            awakeHost = AwakeHost(this@ScreenOffTVService)
-
-            bindEventsProviderService()
-
-            bindDisplayControlService()
-
-            withTimeout(30000) {
-                try {
-                    while (
-                        displayControlService == null ||
-                        eventsProviderService == null
-                    ) {
-                        delay(10)
+            ConnectionSupervisor(
+                connect = { prepareConnection() },
+                isHealthy = {
+                    withContext(Dispatchers.IO) {
+                        Shizuku.pingBinder() && checkShizukuPermission() &&
+                            displayControlService?.asBinder()?.isBinderAlive == true &&
+                            eventsProviderService?.isRunning == true
                     }
-                } finally {
-                    if (isActive) {
-                        awakeHost?.create()
-
-                        eventsProviderService?.let { service ->
-                            volumeKeyEventShizukuHost = VolumeKeyEventShizukuHost(
-                                this@ScreenOffTVService, service
-                            ) {
-                                lifecycleScope.launch(Dispatchers.Main) {
-                                    if (isScreenOn) {
-                                        updateHostState(false)
-                                        turnScreenOff()
-                                    } else {
-                                        updateHostState(true)
-                                        turnScreenOn()
-                                    }
-                                }
-                            }.also { it.register() }
-
-                            service.launch(null)
-                            withContext(Dispatchers.IO) {
-                                displayControlService?.prepare()?.withResult { name, detail ->
-                                    Log.w(TAG, "Display warm-up: $name: $detail")
-                                }
-                            }
-                        }
-
-                        registerSystemLockReceiver()
-
-                        notificationHost.notify(isScreenOn).also {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                                startForeground(NotificationHost.NOTIFICATION_ID, it, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-                            } else {
-                                startForeground(NotificationHost.NOTIFICATION_ID, it)
-                            }
-                        }
-
-                        state.update { State.Prepared }
-                    } else {
-                        notifyException(
-                            ExceptionScenes.ExceptionWhenAccessShizukuRemote,
-                            "binding shizuku remote service timeout"
-                        )
-                        state.update { State.Error }
+                },
+                disconnect = { releaseConnection() },
+                onFailure = { failure ->
+                    Log.e(TAG, "Connection interrupted; retrying", failure)
+                    if (!stopping) {
+                        state.value = State.Created
+                        lastError.value = UiText(R.string.connection_retrying)
                     }
+                },
+            ).run()
+        }
+    }
+
+    private suspend fun prepareConnection() {
+        state.value = State.Created
+        lastError.value = UiText(R.string.waiting_shizuku)
+        // Boot and Shizuku may finish in either order. Keep waiting until explicitly stopped.
+        while (!Shizuku.pingBinder() || !runCatching { checkShizukuPermission() }.getOrDefault(false)) {
+            delay(500)
+        }
+        lastError.value = null
+        solutionDependencyManager.updateImmediately()
+        val repository = SyncSettingsRepository(settingsDataStore)
+        repository.update()
+        loadFeatureFromSettings(repository)
+        if (awakeHost == null) awakeHost = AwakeHost(this)
+
+        bindEventsProviderService()
+        bindDisplayControlService()
+        withTimeout(30_000) {
+            while (displayControlService == null || eventsProviderService == null) delay(10)
+        }
+        val display = checkNotNull(displayControlService)
+        val input = checkNotNull(eventsProviderService)
+        withContext(Dispatchers.IO) {
+            display.prepare().withResult { name, detail -> error("$name: $detail") }
+        }
+        volumeKeyEventShizukuHost = VolumeKeyEventShizukuHost(this, input) {
+            // The gesture fires on the second DOWN; do not wait for release or a timer.
+            lifecycleScope.launch(Dispatchers.Main.immediate) {
+                if (state.value != State.Prepared) return@launch
+                if (isScreenOn) {
+                    turnScreenOff()
+                } else {
+                    turnScreenOn()
                 }
             }
-            } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
-                lastError.value = UiText(R.string.connection_timeout)
-                stopSelf()
-            } catch (e: kotlinx.coroutines.CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Cannot initialize TV service", e)
-                lastError.value = UiText(R.string.connection_failed)
-                stopSelf()
+        }.also { it.register() }
+        withContext(Dispatchers.IO) { input.launch(null) }
+        withTimeout(2_000) {
+            while (!withContext(Dispatchers.IO) { input.isRunning }) delay(25)
+        }
+        // Recover a panel left off if Shizuku restarted while listening.
+        if (!isScreenOn) {
+            turnScreenOn()
+            check(isScreenOn) { "Could not restore display after reconnecting" }
+            updateHostState(true)
+        }
+        awakeHost?.create()
+        if (systemLockReceiver == null) registerSystemLockReceiver()
+        notificationHost.notify(isScreenOn)
+        state.value = State.Prepared
+    }
+
+    private suspend fun releaseConnection() {
+        // The supervisor runs this in NonCancellable, including when the service stops.
+        screenControlMutex.withLock {
+            withContext(Dispatchers.IO) {
+                try {
+                    if (!isScreenOn && displayControlService?.asBinder()?.isBinderAlive == true) {
+                        val display = checkNotNull(displayControlService)
+                        runCatching {
+                            when (feature.solution) {
+                                ShizukuPowerOffScreen -> display.setPowerModeToSurfaceControl(DisplayControlService.POWER_MODE_NORMAL)
+                                    .withResult { name, detail -> error("$name: $detail") }
+                                ShizukuScreenBrightnessNeg1 -> {
+                                    display.setBrightnessToSurfaceControl(recordBrightness.coerceIn(0, 255) / 255f)
+                                        .withResult { name, detail -> error("$name: $detail") }
+                                    restoreBrightnessSettings(display)
+                                }
+                            }
+                            screenState.value = ScreenState.On
+                            awakeHost?.stopKeepAwake()
+                        }.onFailure {
+                            lastError.value = UiText(R.string.screen_on_failed, it.localizedMessage.orEmpty())
+                        }
+                    }
+                    if (isScreenOn && brightnessSettingsPending) {
+                        runCatching { displayControlService?.let { restoreBrightnessSettings(it) } }
+                            .onFailure { lastError.value = UiText(R.string.brightness_restore_failed) }
+                    }
+                    runCatching { volumeKeyEventShizukuHost?.unregister() }
+                    volumeKeyEventShizukuHost = null
+                    runCatching { eventsProviderService?.stop() }
+                    if (eventsBinding) unbindEventsProviderService()
+                    if (displayBinding) unbindDisplayControlService()
+                    eventsProviderService = null
+                    displayControlService = null
+                    eventsBinding = false
+                    displayBinding = false
+                } finally {
+                    if (stopping) awakeHost?.destroy()
+                }
             }
         }
     }
@@ -332,30 +316,15 @@ class ScreenOffTVService : LifecycleService() {
     }
 
     override fun onDestroy() {
-        Log.d(TAG, "onDestroy: ")
+        stopping = true
+        state.value = State.Destroyed
         initializeJob?.cancel()
-        processArgsJob?.cancel()
-        runBlocking {
-            if (state.value == State.Prepared && screenState.value == ScreenState.Off) {
-                turnScreenOn()
-            }
-            unregisterSystemLockReceiver()
-            awakeHost?.destroy()
-            runCatching { volumeKeyEventShizukuHost?.unregister() }
-
-            eventsProviderService?.let {
-                runCatching { it.stop() }
-                unbindEventsProviderService()
-            }
-
-            displayControlService?.let {
-                unbindDisplayControlService()
-            }
-
-            solutionDependencyManager.destroy()
-            super.onDestroy()
-            state.update { State.Destroyed }
-        }
+        VolumeKeyEventShizukuHost.endCapture()
+        unregisterSystemLockReceiver()
+        solutionDependencyManager.destroy()
+        if (initializeJob == null) awakeHost?.destroy()
+        // ConnectionSupervisor restores the display and releases remote services without blocking Main.
+        super.onDestroy()
     }
 
     //== Feature
@@ -407,8 +376,10 @@ class ScreenOffTVService : LifecycleService() {
 
         override fun onServiceDisconnected(name: ComponentName?) {
             displayControlService = null
-            lastError.value = UiText(R.string.shizuku_disconnected)
-            stopSelf()
+            if (!stopping) {
+                lastError.value = UiText(R.string.connection_retrying)
+                state.value = State.Created
+            }
         }
 
     }
@@ -423,7 +394,8 @@ class ScreenOffTVService : LifecycleService() {
                 displayControlServiceConnection
             )
         } catch (e: Exception) {
-            notifyException(ExceptionScenes.ExceptionWhenAccessShizukuRemote, e)
+            displayBinding = false
+            throw e
         }
     }
 
@@ -467,8 +439,10 @@ class ScreenOffTVService : LifecycleService() {
 
         override fun onServiceDisconnected(name: ComponentName?) {
             eventsProviderService = null
-            lastError.value = UiText(R.string.remote_disconnected)
-            stopSelf()
+            if (!stopping) {
+                lastError.value = UiText(R.string.connection_retrying)
+                state.value = State.Created
+            }
         }
 
     }
@@ -483,7 +457,8 @@ class ScreenOffTVService : LifecycleService() {
                 eventsProviderServiceConnection
             )
         } catch (e: Exception) {
-            notifyException(ExceptionScenes.ExceptionWhenAccessShizukuRemote, e)
+            eventsBinding = false
+            throw e
         }
     }
 
@@ -502,6 +477,7 @@ class ScreenOffTVService : LifecycleService() {
     //== Screen state
     private val screenControlMutex = Mutex()
     val isScreenOn get() = screenState.value == ScreenState.On
+    private var brightnessSettingsPending = false
     var recordBrightness = 255
     var recordBrightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
 
@@ -511,106 +487,80 @@ class ScreenOffTVService : LifecycleService() {
 
     suspend fun turnScreenOn() {
         screenControlMutex.withLock {
-            screenState.update { ScreenState.On }
+            val display = checkNotNull(displayControlService)
             try {
                 when (feature.solution) {
-                    ShizukuPowerOffScreen -> {
-                        checkNotNull(displayControlService).setPowerModeToSurfaceControl(
-                            DisplayControlService.POWER_MODE_NORMAL
-                        )?.withResult { name, detail ->
-                            throw IllegalStateException("$name: $detail")
-                        }
-                    }
-
-                    ShizukuScreenBrightnessNeg1 -> {
-                        checkNotNull(displayControlService).setBrightnessToSurfaceControl(
-                            // Release the backlight-off value, then restore system brightness below.
-                            0f
-                        )?.withResult { name, detail ->
-                            throw IllegalStateException("$name: $detail")
-                        }
-                    }
-                }
+                    ShizukuPowerOffScreen -> display.setPowerModeToSurfaceControl(DisplayControlService.POWER_MODE_NORMAL)
+                    ShizukuScreenBrightnessNeg1 -> display.setBrightnessToSurfaceControl(recordBrightness.coerceIn(0, 255) / 255f)
+                }.withResult { name, detail -> error("$name: $detail") }
+                screenState.value = ScreenState.On
+                updateHostState(true)
             } catch (e: Exception) {
+                if (e is kotlinx.coroutines.CancellationException) throw e
                 screenState.value = ScreenState.Off
                 updateHostState(false)
                 lastError.value = UiText(R.string.screen_on_failed, e.localizedMessage.orEmpty())
                 notifyException(ExceptionScenes.ExceptionWhenAccessShizukuRemote, e)
                 return@withLock
             }
+            // The picture is already visible; settings writes and notifications come afterwards.
             if (feature.solution == ShizukuScreenBrightnessNeg1) {
-            try {
-                val firstBrightness = if (recordBrightness < 8) recordBrightness + 5
-                else recordBrightness - 5
-                displayControlService?.setBrightnessToSetting(firstBrightness)
-                delay(25)
-                displayControlService?.setBrightnessToSetting(recordBrightness)
-
-            } catch (e: Exception) {
-                notifyException(ExceptionScenes.ExceptionWhenAccessShizukuRemote, e)
-            }
-            try {
-                if (feature.brightnessManualWhenScreenOff && feature.solution == ShizukuScreenBrightnessNeg1) {
-                    displayControlService?.setBrightnessModeToSetting(recordBrightnessMode)
+                try {
+                    withContext(Dispatchers.IO) { restoreBrightnessSettings(display) }
+                } catch (e: Exception) {
+                    if (e is kotlinx.coroutines.CancellationException) throw e
+                    lastError.value = UiText(R.string.brightness_restore_failed)
+                    notifyException(ExceptionScenes.ExceptionWhenAccessShizukuRemote, e)
                 }
-            } catch (e: Exception) {
-                notifyException(ExceptionScenes.ExceptionWhenAccessShizukuRemote, e)
-            }            }
-
+            }
+            notificationHost.notify(true)
         }
+    }
+
+    private fun restoreBrightnessSettings(display: IDisplayControl) {
+        display.setBrightnessToSetting(recordBrightness)
+            .withResult { name, detail -> error("$name: $detail") }
+        if (feature.brightnessManualWhenScreenOff) {
+            display.setBrightnessModeToSetting(recordBrightnessMode)
+                .withResult { name, detail -> error("$name: $detail") }
+        }
+        brightnessSettingsPending = false
     }
 
     suspend fun turnScreenOff() {
         screenControlMutex.withLock {
-            screenState.update { ScreenState.Off }
-            if (feature.solution == ShizukuScreenBrightnessNeg1) {
-            recordBrightness = try {
-                Settings.System.getInt(
-                    contentResolver,
-                    Settings.System.SCREEN_BRIGHTNESS
-                )
-            } catch (e: Exception) {
-                notifyException(ExceptionScenes.SystemUnsupportedBrightnessSettings, e)
-                128
-            }
-            if (feature.brightnessManualWhenScreenOff && feature.solution == ShizukuScreenBrightnessNeg1) {
-                recordBrightnessMode = try {
-                    Settings.System.getInt(
-                        contentResolver,
-                        Settings.System.SCREEN_BRIGHTNESS_MODE
-                    )
-                } catch (e: Exception) {
-                    notifyException(ExceptionScenes.SystemUnsupportedBrightnessSettings, e)
-                    Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
-                }
-                try {
-                    displayControlService?.setBrightnessModeToSetting(Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
-                } catch (e: Exception) {
-                    notifyException(ExceptionScenes.ExceptionWhenAccessShizukuRemote, e)
-                }
-            }
-            }
+            val display = checkNotNull(displayControlService)
+            var manualModeAttempted = false
             try {
-                when (feature.solution) {
-                    ShizukuPowerOffScreen -> {
-                        checkNotNull(displayControlService).setPowerModeToSurfaceControl(
-                            DisplayControlService.POWER_MODE_OFF
-                        )?.withResult { name, detail ->
-                            throw IllegalStateException("$name: $detail")
-                        }
-                    }
-
-                    ShizukuScreenBrightnessNeg1 -> {
-                        checkNotNull(displayControlService).setBrightnessToSurfaceControl(
-                            // SurfaceControl uses -1 to turn the backlight off; 0 is only minimum brightness.
-                            -1f
-                        )?.withResult { name, detail ->
-                            throw IllegalStateException("$name: $detail")
+                if (feature.solution == ShizukuScreenBrightnessNeg1) {
+                    recordBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+                    if (feature.brightnessManualWhenScreenOff) {
+                        recordBrightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
+                        manualModeAttempted = true
+                        brightnessSettingsPending = true
+                        // Some firmware reapplies brightness on mode changes; finish this before panel-off.
+                        withContext(Dispatchers.IO) {
+                            display.setBrightnessModeToSetting(Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
+                                .withResult { name, detail -> error("$name: $detail") }
                         }
                     }
                 }
+                updateHostState(false)
+                when (feature.solution) {
+                    ShizukuPowerOffScreen -> display.setPowerModeToSurfaceControl(DisplayControlService.POWER_MODE_OFF)
+                    ShizukuScreenBrightnessNeg1 -> display.setBrightnessToSurfaceControl(-1f)
+                }.withResult { name, detail -> error("$name: $detail") }
+                screenState.value = ScreenState.Off
                 notificationHost.notify(false)
             } catch (e: Exception) {
+                if (manualModeAttempted) {
+                    withContext(kotlinx.coroutines.NonCancellable + Dispatchers.IO) {
+                        runCatching { restoreBrightnessSettings(display) }.onFailure { restoreError ->
+                            Log.e(TAG, "Could not roll back brightness settings", restoreError)
+                        }
+                    }
+                }
+                if (e is kotlinx.coroutines.CancellationException) throw e
                 screenState.value = ScreenState.On
                 updateHostState(true)
                 lastError.value = UiText(R.string.screen_off_failed, e.localizedMessage.orEmpty())
@@ -630,7 +580,14 @@ class ScreenOffTVService : LifecycleService() {
                 lifecycleScope.launch(Dispatchers.Main) {
                     screenControlMutex.withLock {
                         if (feature.solution == ShizukuScreenBrightnessNeg1) {
-                            displayControlService?.setBrightnessToSetting(recordBrightness)
+                            try {
+                                withContext(Dispatchers.IO) {
+                                    displayControlService?.let { restoreBrightnessSettings(it) }
+                                }
+                            } catch (e: Exception) {
+                                if (e is kotlinx.coroutines.CancellationException) throw e
+                                lastError.value = UiText(R.string.brightness_restore_failed)
+                            }
                         }
                     }
                     updateHostState(true)

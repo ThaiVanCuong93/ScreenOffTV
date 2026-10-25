@@ -19,9 +19,8 @@ Dùng tài liệu này khi người dùng yêu cầu cài, cập nhật hoặc c
 **Chọn APK Screen Off TV:**
 
 1. Nếu người dùng chỉ định APK hoặc yêu cầu build, dùng đúng bản đó và kiểm tra danh tính tệp.
-2. Nếu cập nhật bản thử nghiệm cục bộ, xem `local_test_build` trong profile. Chỉ dùng khi tệp thực sự có trên máy và khớp checksum. Bản này chưa có link tải công khai.
-3. Nếu cài bản công khai, dùng `screen_off` trong profile. Hiện bản công khai là **0.1.2**, mã nguồn và APK thử nghiệm cục bộ là **0.1.3**.
-4. Nếu TV đã cài bản mới hơn bản được chọn, giữ nguyên và kiểm tra cấu hình; không tự hạ phiên bản. Nếu người dùng chỉ định chính xác một bản cũ hơn, báo xung đột trước khi tiếp tục.
+2. Nếu dùng APK phát hành, đọc mục `screen_off` trong profile. Phiên bản hiện tại là **0.1.3** cho cả mã nguồn và APK. Ưu tiên tệp cục bộ nếu đúng checksum; nếu không có, tải đúng URL đã ghi.
+3. Nếu TV đã cài bản mới hơn bản được chọn, giữ nguyên và kiểm tra cấu hình; không tự hạ phiên bản. Nếu người dùng chỉ định chính xác một bản cũ hơn, báo xung đột trước khi tiếp tục.
 
 Shizuku dùng bản **thedjchi/Shizuku 13.7.0-thedjchi** trong profile. Không đổi sang RikkaApps hoặc fork khác vì chúng có thể trùng package nhưng khác chữ ký.
 
@@ -207,9 +206,9 @@ Không coi cài APK là yêu cầu chạy bộ kiểm thử, khởi động lạ
 
 ### Kiểm tra phím tùy chỉnh
 
-1. Bật dịch vụ, mở **Settings → Remote key → Set custom remote key**; bản 0.1.2 dùng nhãn **Learn another remote key**.
+1. Bật dịch vụ, mở **Settings → Remote key → Set custom remote key**.
 2. Nhờ nhấn đúng phím trên remote thật nếu công cụ không thao tác được. Không tự đoán mã RED theo tên phím; không dùng Nguồn, OK, Back hay mũi tên.
-3. Chờ **Key detected**, đọc mã rồi chọn **Confirm this key**. Từ 0.1.3, hộp thoại đóng sau khi lưu.
+3. Chờ **Key detected**, đọc mã rồi chọn **Confirm this key**. Hộp thoại đóng sau khi lưu.
 4. Mở **Test remote key**, nhấn một lần và kiểm tra có nhận tín hiệu. Phím gửi qua ADB không đủ chứng minh nhận được phím trên remote thật.
 
 Giữ phím vừa thiết lập nếu đó là lựa chọn người dùng muốn dùng. Chỉ khôi phục phím cũ khi người dùng yêu cầu thử tạm.
@@ -233,7 +232,7 @@ adb -s "$tv_serial" shell dumpsys activity services com.thaivancuong93.screenoff
 4. Cần thấy boot hoàn tất (`1`), Shizuku có PID và `ScreenOffTVService` chạy foreground (`isForeground=true` hoặc thông tin tương đương trên Android đó). Đọc nguồn khởi động `BOOT_COMPLETED` nếu hệ thống có ghi.
 5. Chỉ sau khi ghi nhận trạng thái dịch vụ mới mở Screen Off TV để kiểm tra **Ready to control**.
 
-Shizuku có thể mất vài phút chờ Wi-Fi. Screen Off TV hiện có thời gian chờ khoảng 30 giây cho Shizuku và một lần chờ riêng cho kết nối dịch vụ. Nếu Shizuku chạy muộn, Screen Off TV có thể đã báo lỗi. Có thể bật lại dịch vụ để khôi phục, nhưng phải ghi lần thử tự khởi động chưa đạt.
+Shizuku có thể mất vài phút chờ Wi-Fi. Screen Off TV tiếp tục chờ cho đến khi Shizuku chạy và được cấp quyền. Mỗi lần gắn dịch vụ có giới hạn 30 giây; nếu lỗi, bộ giám sát sẽ giải phóng kết nối cũ và tự thử lại. Khi kiểm tra tự khởi động, tiếp tục quan sát mà không mở app hoặc bấm Start. Nếu phải khởi động dịch vụ thủ công mới dùng được, ghi lần thử tự khởi động chưa đạt.
 
 **Kết quả đạt:** cả hai dịch vụ chạy trước thao tác mở app/khởi động thủ công và Screen Off TV sau đó hiển thị sẵn sàng. Công tắc bật, app mở được hoặc màn hình Ready sau khi bấm Start không đủ để kết luận tự khởi động thành công. Chỉ có PID cũng chưa chứng minh chức năng tắt màn hình/âm thanh đã hoạt động.
 

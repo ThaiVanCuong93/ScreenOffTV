@@ -29,10 +29,10 @@ Screen Off TV điều khiển màn hình, không phát nhạc/video và không b
 
 ## Tải và cài đặt
 
-Bản tải về hiện tại: **0.1.2**, ký bằng khóa debug Android.
+Bản tải về hiện tại: **0.1.3**, ký bằng khóa debug Android.
 
 1. Cài và khởi động [thedjchi/Shizuku dành cho TV](https://github.com/thedjchi/Shizuku) theo [hướng dẫn cài đặt có ảnh](docs/INSTALL.md).
-2. Tải [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk). Đối chiếu SHA-256 với [SHA256SUMS](dist/SHA256SUMS).
+2. Tải [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk). Đối chiếu SHA-256 với [SHA256SUMS](dist/SHA256SUMS).
 3. Cài APK, mở Screen Off TV và chọn **Bật dịch vụ**.
 4. Khi Shizuku hỏi quyền, chọn **Cho phép mọi lúc**. Chờ trạng thái **Sẵn sàng điều khiển**, kèm **Shizuku: đang chạy · đã cấp quyền**.
 5. Vào **Cài đặt** để chọn phím remote, thao tác, chế độ tắt màn hình và ngôn ngữ. Dừng dịch vụ trước khi đổi chế độ tắt màn hình.
@@ -41,7 +41,7 @@ Bạn cũng có thể tự build APK theo hướng dẫn bên dưới.
 
 ## Cách sử dụng
 
-Phím tắt mặc định là **Mute, nhấn hai lần nhanh**.
+Phím tắt mặc định là **Mute, nhấn hai lần nhanh**. Thao tác được nhận ngay ở lần nhấn xuống thứ hai, không đợi nhả phím.
 
 1. Bật dịch vụ Screen Off TV và kiểm tra trạng thái **Sẵn sàng điều khiển**.
 2. Mở nhạc hoặc video trong trình phát bạn thường dùng, xác nhận đang có âm thanh.
@@ -54,7 +54,7 @@ Nếu âm thanh dừng, bật lại màn hình và kiểm tra trình phát. Có 
 
 ### Đổi phím remote
 
-Vào **Cài đặt → Phím điều khiển**, chọn phím có sẵn hoặc **Nhận một phím khác từ remote**. Nhấn phím muốn dùng rồi chọn **Xác nhận dùng phím này** để lưu. Từ bản **0.1.3**, hộp thoại tự đóng sau khi xác nhận.
+Vào **Cài đặt → Phím điều khiển**, chọn phím có sẵn hoặc **Nhận một phím khác từ remote**. Nhấn phím muốn dùng rồi chọn **Xác nhận dùng phím này** để lưu. Hộp thoại tự đóng sau khi xác nhận.
 
 Xem [hướng dẫn đổi sang nút RED](docs/INSTALL.md#8-đổi-sang-nút-red-màu-đỏ--tùy-chọn) nếu cần ví dụ từng bước.
 
@@ -71,7 +71,7 @@ Dừng dịch vụ trước khi đổi chế độ. Cả hai chế độ đều 
 
 Tùy chọn **Tự khởi động cùng TV** được bật mặc định. Để sử dụng, cần bật thêm **Bắt đầu khi khởi động / Start on boot** trong Shizuku và giữ Wi-Fi sẵn sàng sau khi TV khởi động.
 
-Nếu Shizuku khởi động muộn và Screen Off TV báo lỗi, chờ Shizuku chạy rồi bật lại dịch vụ. Nếu bạn đã tắt tùy chọn tự khởi động, ứng dụng sẽ giữ nguyên lựa chọn đó khi mở lại.
+Nếu Shizuku khởi động muộn hoặc mất kết nối, Screen Off TV sẽ tiếp tục chờ và tự kết nối lại. Chỉ khi đã kết nối được cả điều khiển màn hình và bộ nhận phím, ứng dụng mới báo sẵn sàng. Nếu bạn đã tắt tùy chọn tự khởi động, ứng dụng sẽ giữ nguyên lựa chọn đó khi mở lại.
 
 Xem [cách thiết lập Shizuku tự khởi động](docs/INSTALL.md#5-bật-shizuku-khởi-động-cùng-tv) và [cách kiểm tra sau khi khởi động lại TV](docs/INSTALL.md#9-kiểm-tra-tính-năng-và-tự-khởi-động).
 
@@ -94,11 +94,19 @@ Nếu ngôn ngữ TV chưa được hỗ trợ, ứng dụng dùng tiếng Anh. 
 
 ## Build và kiểm thử
 
-Mã nguồn hiện tại: **0.1.3** (versionCode 3). Bản APK đang được dẫn link tải phía trên: **0.1.2**.
+Phiên bản hiện tại: **0.1.3** (versionCode 3), thống nhất giữa mã nguồn và APK tải về.
 
 Mã ứng dụng: `com.thaivancuong93.screenofftv`. Cần JDK 17 và Android SDK platform 35. Cấu hình `JAVA_HOME`, `ANDROID_HOME` theo máy đang dùng.
 
-Build APK và chạy kiểm thử logic:
+APK trong `dist/` được đóng gói bằng bản release ký cùng khóa debug Android. Để tạo bản này:
+
+```bash
+./gradlew :app:assembleDebugSignedRelease
+```
+
+Kết quả: `app/build/outputs/apk/debugSigned/release/app-debugSigned-release.apk`.
+
+Build bản debug và chạy kiểm thử logic:
 
 ```bash
 ./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest

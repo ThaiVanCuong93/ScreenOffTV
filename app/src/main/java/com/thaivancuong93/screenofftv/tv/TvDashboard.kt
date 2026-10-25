@@ -39,6 +39,9 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.thaivancuong93.screenofftv.i18n.*
 import com.thaivancuong93.screenofftv.BuildConfig
 import com.thaivancuong93.screenofftv.R
@@ -301,7 +304,20 @@ private fun LearnRemoteDialog(onConfirm: (Int) -> Unit, onCancel: () -> Unit) {
     val captureError by VolumeKeyEventShizukuHost.captureError.collectAsStateWithLifecycle()
     val confirmFocus = remember { FocusRequester() }
     val cancelFocus = remember { FocusRequester() }
-    DisposableEffect(Unit) { onDispose { VolumeKeyEventShizukuHost.endCapture() } }
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(lifecycle) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                VolumeKeyEventShizukuHost.endCapture()
+                onCancel()
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+            VolumeKeyEventShizukuHost.endCapture()
+        }
+    }
     LocalizedAlertDialog(
         onDismissRequest = onCancel,
         title = {

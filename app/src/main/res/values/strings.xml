@@ -122,4 +122,7 @@
     <string name="str_ExceptionWhenAccessShizukuRemote_description">Check that Shizuku is running and Screen Off TV is authorized.</string>
     <string name="str_SystemUnsupportedBrightnessSettings_name">TV brightness settings are not supported</string>
     <string name="str_SystemUnsupportedBrightnessSettings_description">Try Screen Off / Picture Off mode in Settings.</string>
+    <string name="waiting_shizuku">Waiting for Shizuku to start and authorization. The service will reconnect automatically.</string>
+    <string name="connection_retrying">Connection interrupted or unavailable. Reconnecting automatically…</string>
+    <string name="brightness_restore_failed">The picture is on, but restoring brightness settings failed. Check the TV brightness settings.</string>
 </resources>

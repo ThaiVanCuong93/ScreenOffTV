@@ -11,10 +11,10 @@ class EventsProviderService : IEventsProvider.Stub() {
     private val lock = Any()
     @Volatile private var running = false
     @Volatile private var process: Process? = null
-    private var thread: Thread? = null
+    @Volatile private var thread: Thread? = null
     private val listeners = RemoteCallbackList<IEventsListener>()
 
-    override fun isRunning() = running && thread?.isAlive == true
+    override fun isRunning() = running && process?.isAlive == true && thread?.isAlive == true
     override fun launch(filter: String?) = synchronized(lock) {
         if (running) return@synchronized
         val child = Runtime.getRuntime().exec(arrayOf("getevent"))

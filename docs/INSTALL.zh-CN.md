@@ -11,15 +11,15 @@
 | 应用 | 项目 | 下载 |
 |---|---|---|
 | 适合电视遥控操作的 Shizuku fork 13.7.0-thedjchi | [发布页](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi) | [APK](https://github.com/thedjchi/Shizuku/releases/download/v13.7.0-thedjchi/shizuku-v13.7.0-thedjchi.apk) |
-| Screen Off TV 0.1.2 | [仓库 APK 页面](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/main/dist/Screen-Off-TV-0.1.2.apk) | [APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk) |
+| Screen Off TV 0.1.3 | [仓库 APK 页面](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk) | [APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk) |
 
 先下载两个文件。GitHub 文件页面选择 **Download raw file**，不要把 HTML 网页保存为 APK。在 Linux 用 `sha256sum 文件.apk`，在 PowerShell 用 `Get-FileHash 文件.apk -Algorithm SHA256`，对照：
 
 ```text
 shizuku-v13.7.0-thedjchi.apk
 6ea6dee65d5ddc626b6b75b2c2f67f8cc547fa47d7b437e6892639c37eaffe43
-Screen-Off-TV-0.1.2.apk
-96860596bfaec0f69f3f98f5f73f2b96d6f0fea57abe067cbed5d58ff5244fd4
+Screen-Off-TV-0.1.3.apk
+74b80f20adcba6c4e91034b3e581b672dd01c285e5ad879dfadf6d1816cb4b36
 ```
 
 ## 2. 开启开发者选项与调试
@@ -81,14 +81,14 @@ adb -s TV_SERIAL shell pm grant moe.shizuku.privileged.api android.permission.WR
 
 图中 TCP 和 Watchdog 均已开启。并非所有电视都需要开启 TCP。Watchdog 可在 Shizuku 服务停止后尝试恢复，但不能代替开机自启动。
 
-**注意：**开机自启动需要完成步骤 4 的连接、开启自启动选项，并在重启后保持 Wi-Fi 可用。启动时间取决于电视和 Wi-Fi 连接。Screen Off TV 当前等待 Shizuku 约 30 秒；如果 Shizuku 启动较晚，请等其就绪后重新启动 Screen Off TV 服务。自动启动的检查见步骤 9。
+**注意：**开机自启动需要完成步骤 4 的连接、开启自启动选项，并在重启后保持 Wi-Fi 可用。启动时间取决于电视和 Wi-Fi 连接。Screen Off TV 会持续等待 Shizuku，即使超过 30 秒也会在其就绪后自动连接；服务连接失败时会自动重试。自动启动的检查见步骤 9。
 
 ## 6. 安装 Screen Off TV 并授权
 
 按步骤 3 的 USB 方法安装，或运行：
 
 ```bash
-adb -s TV_SERIAL install Screen-Off-TV-0.1.2.apk
+adb -s TV_SERIAL install Screen-Off-TV-0.1.3.apk
 ```
 
 打开 Screen Off TV，选择 **Start service**。首次安装可能提示需要 Shizuku 权限：
@@ -121,9 +121,9 @@ Screen Off TV 有独立的开机启动开关，同时需要开启步骤 5 中 Sh
 
 默认快捷操作为 **Mute，双击**。如需使用 RED 红色按键：
 
-1. 选择 **Start service**，打开 **Settings → Remote key → Set custom remote key**（0.1.2 中为 **Learn another remote key**）。
+1. 选择 **Start service**，打开 **Settings → Remote key → Set custom remote key**。
 2. 在 **Learn a remote key** 窗口中按一次遥控器上的 RED。不要使用电源、OK、Back 或方向键。
-3. 显示 **Key detected** 后，选择 **Confirm this key** 保存，或选择 **Try another key** 重新设置。0.1.3 确认后会自动关闭窗口。
+3. 显示 **Key detected** 后，选择 **Confirm this key** 保存，或选择 **Try another key** 重新设置。确认后会自动关闭窗口。
 4. 如需保留默认操作，将 **Press action** 设为 **Double press**。打开 **Test remote key**，按一次 RED 检查是否收到信号。
 
 ![显示 Key detected 后，选择 Confirm this key 保存](images/install/set-red_key_en.png)
@@ -147,7 +147,7 @@ Screen Off TV 有独立的开机启动开关，同时需要开启步骤 5 中 Sh
 | Screen Off TV 重启后未自动启动 | 检查授权、Screen Off TV 的 **Start when TV boots**，以及 Shizuku 的 **Start on boot** 和运行状态。 |
 | Shizuku 无法连接 | 检查 Wi-Fi、**USB debugging** 和 **Wireless debugging**。 |
 | 尚未授权 | 选择 **Start service**，在 Shizuku 弹窗中选择 **Allow all the time**；曾拒绝时查看 Shizuku 的应用授权列表。 |
-| Shizuku 就绪但客户端超时 | 等 Shizuku 就绪后选择 **Start service**；该次自动启动未通过。 |
+| Shizuku 就绪但客户端超时 | 等待自动重新连接；如果持续报错，请记录提示并检查 Shizuku 授权。 |
 | 播放停止 | 恢复画面并检查播放器；能否继续播放取决于播放器。 |
 
 参考：[fork](https://github.com/thedjchi/Shizuku)、[Setup](https://github.com/thedjchi/Shizuku/wiki/Setup)、[Features](https://github.com/thedjchi/Shizuku/wiki/Features)、[Google ADB](https://developer.android.com/tools/adb)。另见 [AI 指南](AGENT-INSTALL.md) 与 [测试记录](TESTING.md)。

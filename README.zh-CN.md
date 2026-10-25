@@ -29,12 +29,12 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 
 ## 下载与安装
 
-当前下载版本：**0.1.2**，使用 Android 调试密钥签名。
+当前下载版本：**0.1.3**，使用 Android 调试密钥签名。
 
 以下操作名称对应安装指南中的英语界面截图。
 
 1. 按照[图文安装指南](docs/INSTALL.zh-CN.md)安装并启动 [thedjchi/Shizuku TV fork](https://github.com/thedjchi/Shizuku)。
-2. 下载 [Screen-Off-TV-0.1.2.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk)，并与 [SHA256SUMS](dist/SHA256SUMS) 核对 SHA-256。
+2. 下载 [Screen-Off-TV-0.1.3.apk](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/codex/publish-source/dist/Screen-Off-TV-0.1.3.apk)，并与 [SHA256SUMS](dist/SHA256SUMS) 核对 SHA-256。
 3. 安装 APK，打开 Screen Off TV，选择 **Start service**。
 4. Shizuku 请求授权时，选择 **Allow all the time**。等待显示 **Ready to control** 和 **Shizuku: running · authorized**。
 5. 打开 **Settings**，选择遥控按键、操作方式、息屏模式和语言。修改息屏模式前先停止服务。
@@ -43,7 +43,7 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 
 ## 使用方法
 
-默认快捷操作为**快速按两下 Mute（静音键）**。
+默认快捷操作为**快速按两下 Mute（静音键）**。第二次按下时立即识别操作，无需等待松开按键。
 
 1. 启动 Screen Off TV 服务，确认已就绪。
 2. 在常用播放器中播放音乐或视频，确认有声音。
@@ -56,9 +56,9 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 
 ### 更改遥控按键
 
-按英语安装指南操作时，打开 **Settings → Remote key**，选择预设按键或 **Set custom remote key**（0.1.2 中为 **Learn another remote key**）。按下想使用的按键，再选择 **Confirm this key** 保存。从 **0.1.3** 起，确认后窗口会自动关闭。
+按英语安装指南操作时，打开 **Settings → Remote key**，选择预设按键或 **Set custom remote key**。按下想使用的按键，再选择 **Confirm this key** 保存。确认后窗口会自动关闭。
 
-使用简体中文界面时，对应入口为 **设置 → 遥控按键 → 设置自定义遥控按键**，保存按钮为 **确认使用此按键**。0.1.2 的入口名称为 **识别其他遥控按键**。
+使用简体中文界面时，对应入口为 **设置 → 遥控按键 → 设置自定义遥控按键**，保存按钮为 **确认使用此按键**。
 
 分步示例见 [RED 红色按键设置](docs/INSTALL.zh-CN.md#8-可选更换为-red-红色按键)。
 
@@ -75,7 +75,7 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 
 随电视启动选项默认开启。还需要在 Shizuku 中开启 **Start on boot**，并在电视启动后保持 Wi-Fi 可用。Screen Off TV 英语界面中的对应选项为 **Start when TV boots**。
 
-如果 Shizuku 启动较晚，Screen Off TV 显示错误，请等 Shizuku 运行后重新启动应用服务。如果已关闭自动启动，应用下次打开时会保留该选择。
+如果 Shizuku 启动较晚或连接中断，Screen Off TV 会继续等待并自动重新连接。屏幕控制和遥控输入均可用后，应用才显示就绪。如果已关闭自动启动，应用下次打开时会保留该选择。
 
 参阅 [Shizuku 自启动设置](docs/INSTALL.zh-CN.md#5-设置-shizuku-开机自启动)和[重启后的检查方法](docs/INSTALL.zh-CN.md#9-验证画面声音及开机恢复)。
 
@@ -98,11 +98,19 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 
 ## 构建与测试
 
-当前源码版本：**0.1.3**（versionCode 3）。上方下载链接对应 APK **0.1.2**。
+当前版本：**0.1.3**（versionCode 3），源码与下载 APK 版本一致。
 
 应用 ID：`com.thaivancuong93.screenofftv`。需要 JDK 17 和 Android SDK platform 35。请按本机环境设置 `JAVA_HOME`、`ANDROID_HOME`。
 
-构建 APK 并运行单元测试：
+`dist/` 中的 APK 使用 release 构建，并以 Android 调试密钥签名。构建命令：
+
+```bash
+./gradlew :app:assembleDebugSignedRelease
+```
+
+输出：`app/build/outputs/apk/debugSigned/release/app-debugSigned-release.apk`。
+
+构建 debug APK 并运行单元测试：
 
 ```bash
 ./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest

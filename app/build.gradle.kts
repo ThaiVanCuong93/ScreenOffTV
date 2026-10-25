@@ -37,6 +37,7 @@ android {
             )
         }
     }
+    bundle { language { enableSplit = false } }
     flavorDimensions += "sign"
     productFlavors {
         create("debugSigned") {
