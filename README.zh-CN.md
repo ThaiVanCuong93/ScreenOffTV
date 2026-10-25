@@ -49,7 +49,7 @@ Screen Off TV 负责控制屏幕，不播放音乐或视频，也不会为其他
 阅读以下指南及其中链接的 APK 配置文件：
 https://raw.githubusercontent.com/ThaiVanCuong93/ScreenOffTV/codex/publish-source/docs/AGENT-INSTALL.md
 
-请使用已发布的 APK，在我的电视上完整安装并配置 thedjchi/Shizuku 和 Screen Off TV，不要克隆仓库或构建。连接电视，验证正确的 fork，启动 Shizuku、授予权限，并按指南配置和读回两个应用的设置。更新时保留已有设置。只有 Shizuku 正在运行，且 Screen Off TV 已获授权并就绪时，才能报告完成。如果受阻，请说明未完成的步骤，仅询问仍需我提供的信息或操作。
+请使用已发布的 APK，在我的电视上完整安装并配置 thedjchi/Shizuku 和 Screen Off TV。连接电视，验证正确的 fork，启动 Shizuku、授予权限，并按指南配置和读回两个应用的设置。更新时保留已有设置。只有 Shizuku 正在运行，且 Screen Off TV 已获授权并就绪时，才能报告完成。如果受阻，请说明未完成的步骤，仅询问仍需我提供的信息或操作。
 ```
 
 安装只需 APK；下方构建说明仅用于源码开发。
