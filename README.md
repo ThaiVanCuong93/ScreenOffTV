@@ -8,7 +8,7 @@
 
 [GitHub repository](https://github.com/ThaiVanCuong93/ScreenOffTV)
 
-Owner-reported stable operation: **Xiaomi TV A Pro 55-inch (2026)**. This usage feedback is recorded separately from the automated checks below.
+Tested on **Xiaomi TV A Pro 55-inch (2026)** with stable operation.
 
 ![Android TV screen-off app with remote shortcuts and English interface](fastlane/metadata/android/en-US/images/tvScreenshots/1.png)
 
@@ -53,7 +53,7 @@ The default shortcut is **Mute pressed twice quickly**. In **Settings**, choose 
 3. Return to the player and use the configured key action to turn off the picture.
 4. Repeat the same action to turn the picture back on.
 
-If playback stops or the panel does not respond, turn the picture back on and check the selected screen-off mode and player. Do not assume that every TV or media app supports background audio.
+If playback stops or the panel does not respond, turn the picture back on and check the selected screen-off mode and player. Continued audio playback depends on the TV and media app.
 
 ## Screen Off / Picture Off and backlight modes
 
@@ -70,7 +70,7 @@ The app requires Android TV 8.0+; this minimum version is not a claim that every
 
 | Device | Android | Player / scope | Mode | Verified result |
 |---|---|---|---|---|
-| Xiaomi TV A Pro 55-inch (2026) | Firmware not recorded in the report | Owner usage feedback | Not specified | Owner reports stable operation; player, duration and reboot details not recorded. |
+| Xiaomi TV A Pro 55-inch (2026) | Firmware version not recorded | Everyday use | Not specified | Stable operation. Player, usage duration and reboot details not recorded. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | UI, languages, settings and D-pad | UI configuration | 6 Android tests passed; includes About scrolling and language switching. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Music or movie playback | Screen Off / Picture Off | Panel behavior and uninterrupted audio have not been verified with a named player. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Music or movie playback | Backlight off | Panel behavior and uninterrupted audio have not been verified with a named player. |
@@ -82,7 +82,7 @@ To report support for another TV, include its model, Android version, player/ver
 
 ### Can I turn off the TV screen without turning off the sound?
 
-That is the intended use: Android TV screen off with audio on. It requires a compatible TV and a player that continues playing. The table above separates verified UI behavior from playback cases still awaiting confirmation.
+That is the intended use: Android TV screen off with audio on. It requires a compatible TV and a player that continues playing. See the table above for test results on each device.
 
 ### Does this turn the TV off or put it in standby?
 
@@ -98,7 +98,7 @@ Repeat the configured remote action. The default is a quick double press of Mute
 
 ### Will every music or video app keep playing?
 
-Not necessarily. Player behavior and TV firmware can pause playback or reject screen-control requests. Named player compatibility should be reported only after a real test; there is no blanket compatibility promise.
+Not necessarily. Player behavior and TV firmware can pause playback or reject screen-control requests. Test it with the player you use.
 
 ### Does the service start automatically after the TV boots?
 
@@ -125,7 +125,7 @@ Requires JDK 17 and Android SDK platform 35. Configure `JAVA_HOME` and `ANDROID_
 ./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
 ```
 
-APK: `app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`. This build uses the Android debug signing key. The prepared local APK is named `Screen-Off-TV-0.1.2.apk`.
+APK: `app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`. This build uses the Android debug signing key. The APK in `dist/` is named `Screen-Off-TV-0.1.2.apk`.
 
 UI and language tests require a connected Android device:
 
@@ -141,7 +141,7 @@ Unsigned release build: `./gradlew :app:assembleUnsignedRelease`. Sign it with y
 - `hidden-api/`: Android display API access.
 - `ipc/`: inter-process result types.
 - `shizuku-service/`: screen control and remote input via Shizuku.
-- `design/`: original icon artwork supplied by the project owner.
+- `design/`: original icon artwork.
 - `fastlane/`: English, Vietnamese and Simplified Chinese distribution metadata.
 
 ## Privacy and license

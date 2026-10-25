@@ -63,7 +63,7 @@ Open Shizuku from the launcher or Settings → Apps → Shizuku → Open.
 
 ![TV fork pairing instructions](images/install/11-shizuku-pairing.png)
 
-If settings returns to the dialog early, use the physical remote. Agents should avoid `uiautomator dump` or competing UiAutomation during automatic pairing; use screenshots and remote-key navigation instead.
+If settings returns to the dialog early, use the physical remote. When using automation, avoid `uiautomator dump` or competing UiAutomation during automatic pairing; use screenshots and remote-key navigation instead.
 
 **PC fallback:** Shizuku → Start by connecting to a computer → View command. Run the exact displayed starter command through authorized ADB; its installation path changes. PC startup alone is not wireless boot recovery. App version 13.7.0 can display server version 13.6 on Home; verify the app version in About/package info.
 
@@ -107,7 +107,7 @@ Settings → Remote key: **Mute**; Action: **double press**; Start when TV boots
 
 ## 8. Optional RED button
 
-The default remains Mute. To use RED: start service → Settings → Remote key → Learn another remote key → press the real RED button once → read the detected code → Confirm this key. Keep double press. In Test remote key use a single press first. Do not assign Power, OK, Back or navigation keys. If RED is missing/not detected, keep Mute; select Mute again to restore defaults. Do not guess a vendor code or treat ADB-injected keys as hardware proof. This physical walkthrough was not tested, so no RED screenshots are supplied.
+The default remains Mute. To use RED: start service → Settings → Remote key → Learn another remote key → press the real RED button once → read the detected code → Confirm this key. Keep double press. In Test remote key use a single press first. Do not assign Power, OK, Back or navigation keys. If RED is missing/not detected, keep Mute; select Mute again to restore defaults. Use the code detected from the remote. ADB-injected keys may behave differently. The physical RED button has not been tested, so screenshots are not available.
 
 ## 9. Test picture/audio and boot recovery
 
@@ -117,13 +117,13 @@ Reboot via the TV menu, wait for Wi-Fi/Shizuku, then verify services or the real
 
 ![Ready after second reboot; service inspection happened before app launch](images/install/25-reboot-second-ready.png)
 
-The second reboot on the test TV verified both services before opening the app; Android recorded `BOOT_COMPLETED`. Two reboots are device-specific evidence, not long-term certification. Named-player panel/audio continuity and physical RED remain unverified in this session.
+The second reboot on the test TV verified both services before opening the app; Android recorded `BOOT_COMPLETED`. These results apply to the tested TV and firmware. Continuous audio with a specific player and the physical RED button have not been tested.
 
 ## 10. Troubleshooting
 
 | Problem | Next step |
 |---|---|
-| No Wireless debugging | Use the installed Shizuku View command via PC; do not promise non-root boot recovery on that firmware. |
+| No Wireless debugging | Use the installed Shizuku View command via PC; Reboot the TV to check whether automatic startup works. |
 | Pairing code not detected | Restart Pairing, show a fresh code with the remote, keep Wi-Fi and avoid concurrent UiAutomation. |
 | Permission denied | Start service and allow it in Shizuku; inspect authorized apps if previously denied. |
 | Shizuku ready but app timed out | Restart the app service after Shizuku is ready; record that boot run as failed. |

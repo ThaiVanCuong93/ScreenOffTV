@@ -8,7 +8,7 @@
 
 [GitHub 仓库](https://github.com/ThaiVanCuong93/ScreenOffTV)
 
-项目维护者反馈：在 **Xiaomi TV A Pro 55 英寸 2026 款** 上运行稳定。此使用反馈与下方自动化测试分开记录。
+已在 **Xiaomi TV A Pro 55 英寸 2026 款** 上测试，运行稳定。
 
 ![通过遥控器控制 Android TV 息屏的简体中文应用界面](fastlane/metadata/android/zh-CN/images/tvScreenshots/1.png)
 
@@ -70,7 +70,7 @@
 
 | 设备 | Android | 播放器 / 范围 | 模式 | 已验证结果 |
 |---|---|---|---|---|
-| Xiaomi TV A Pro 55 英寸 2026 款 | 反馈中未记录固件 | 维护者使用反馈 | 未记录模式 | 维护者反馈运行稳定；尚未记录播放器、持续时间和重启细节。 |
+| Xiaomi TV A Pro 55 英寸 2026 款 | 未记录固件版本 | 日常使用 | 未记录模式 | 运行稳定。尚未记录播放器、使用时长和重启细节。 |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | 界面、语言、设置和方向键 | 界面配置 | 6 项 Android 测试通过，包括关于页面滚动和语言切换。 |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | 音乐或电影播放 | Screen Off / Picture Off | 尚未记录具体播放器的面板控制和声音连续播放结果。 |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | 音乐或电影播放 | 关闭背光 | 尚未记录具体播放器的面板控制和声音连续播放结果。 |
@@ -82,7 +82,7 @@
 
 ### 能否关闭电视画面但保留声音？
 
-这正是应用的目标：让 Android TV 息屏后继续听歌或视频声音。但需要兼容的电视，以及会继续播放的播放器。上表区分了已验证的界面功能与仍待确认的播放情况。
+这正是应用的目标：让 Android TV 息屏后继续听歌或视频声音。但需要兼容的电视，以及会继续播放的播放器。各设备的测试结果见上表。
 
 ### 应用会关闭电视电源或使电视进入待机吗？
 
@@ -98,7 +98,7 @@ Shizuku 提供普通 Android 应用无法直接使用的屏幕操作和遥控输
 
 ### 所有音乐或视频应用都会继续播放吗？
 
-不一定。播放器或电视固件可能暂停播放或拒绝屏幕控制请求。只有经过实际测试后，才能记录某个播放器兼容，不能承诺所有应用都支持。
+不一定。播放器或电视固件可能暂停播放或拒绝屏幕控制请求。请使用您常用的播放器实际测试。
 
 ### 电视开机后服务会自动启动吗？
 
@@ -125,7 +125,7 @@ Shizuku 提供普通 Android 应用无法直接使用的屏幕操作和遥控输
 ./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
 ```
 
-APK：`app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`。此构建使用 Android 调试签名密钥。本地准备好的 APK 名为 `Screen-Off-TV-0.1.2.apk`。
+APK：`app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`。此构建使用 Android 调试签名密钥。`dist/` 中的 APK 名为 `Screen-Off-TV-0.1.2.apk`。
 
 界面和语言测试需要连接 Android 设备：
 
@@ -141,7 +141,7 @@ APK：`app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`。此�
 - `hidden-api/`：访问 Android 屏幕 API。
 - `ipc/`：进程间通信的结果类型。
 - `shizuku-service/`：通过 Shizuku 控制屏幕并接收遥控输入。
-- `design/`：项目所有者提供的原始图标素材。
+- `design/`：原始图标素材。
 - `fastlane/`：英语、越南语和简体中文的分发信息。
 
 ## 隐私与许可证

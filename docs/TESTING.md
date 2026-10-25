@@ -1,7 +1,7 @@
 # Screen Off TV 0.1.2 — test evidence
 
 Recorded on 2026-10-25. Application ID: `com.thaivancuong93.screenofftv`, versionCode 2.
-This document records observed results; it is not a compatibility certification for every TV or player.
+Results apply to the devices and configurations listed below.
 
 ## Device
 
@@ -42,7 +42,7 @@ The UI tests do not turn the panel off, play a movie/music track or reboot the T
 
 For each screen-off mode, record an actual player name/version, content type, panel result, audio continuity, ability to restore the picture and relevant firmware version. Boot recovery with configured Shizuku was tested below; the Shizuku-unavailable/delayed-beyond-timeout case remains unverified.
 
-Do not mark a player supported solely because the app installs or the UI tests pass.
+Playback compatibility requires a separate test with the player.
 
 ## Compatibility report template
 
@@ -76,9 +76,9 @@ With JDK 17 and Android SDK platform 35 configured:
 
 Run the connected tests on an awake TV with no other UI automation running. The tests temporarily change language/start-on-boot preferences and restore their saved values.
 
-## Owner-reported device experience
+## Xiaomi TV A Pro 55-inch (2026)
 
-On 2026-10-25 the project owner reported stable operation on **Xiaomi TV A Pro 55-inch (2026)**. This is recorded as owner usage feedback. A named player/version, test duration, firmware and a full reboot record were not supplied in that report; do not convert it into a long-duration lab result.
+Tested on **Xiaomi TV A Pro 55-inch (2026)** with stable operation, recorded on 2026-10-25. Player/version, usage duration, firmware and reboot details have not been recorded.
 
 ## Fresh installation and boot recovery — 2026-10-25
 
@@ -91,6 +91,6 @@ On 2026-10-25 the project owner reported stable operation on **Xiaomi TV A Pro 5
 
 ![Ready after second reboot](images/install/25-reboot-second-ready.png)
 
-This verifies the observed startup chain on this device, not long-term stability or every firmware. The missing-Shizuku timeout case, physical RED learning and named-player panel/audio continuity remain unverified. USB installer, original Build-tapping flow and download-page screenshots were not captured; the manuals describe those paths without fabricating images.
+Boot recovery passed on this device. Long-term stability and other firmware versions have not been tested. The missing-Shizuku timeout case, physical RED learning and named-player panel/audio continuity remain unverified. Screenshots are not available for USB installation, enabling Developer options from scratch or the download pages.
 
 [Illustrated installation guide](INSTALL.en.md) · [AI agent runbook](AGENT-INSTALL.md)

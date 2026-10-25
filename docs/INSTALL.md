@@ -8,7 +8,7 @@ Cài theo thứ tự dưới đây: **Shizuku → ghép đôi → bật tự ch�
 
 Bạn cần remote, Wi-Fi gia đình, máy tính hoặc USB và một ứng dụng quản lý tệp trên TV nếu cài qua USB. TV cần Android 8 trở lên cho Screen Off TV; luồng ghép đôi không dây cần firmware có mục Wireless debugging. Hướng dẫn này dùng **thedjchi/Shizuku**, bản fork có giao diện phù hợp remote TV.
 
-| Ứng dụng | Nguồn tải đã chốt |
+| Ứng dụng | Nguồn tải |
 |---|---|
 | Shizuku 13.7.0-thedjchi | [Trang phát hành](https://github.com/thedjchi/Shizuku/releases/tag/v13.7.0-thedjchi) · [Tải APK](https://github.com/thedjchi/Shizuku/releases/download/v13.7.0-thedjchi/shizuku-v13.7.0-thedjchi.apk) |
 | Screen Off TV 0.1.2 | [Trang APK trong repo](https://github.com/ThaiVanCuong93/ScreenOffTV/blob/main/dist/Screen-Off-TV-0.1.2.apk) · [Tải APK](https://github.com/ThaiVanCuong93/ScreenOffTV/raw/refs/heads/main/dist/Screen-Off-TV-0.1.2.apk) |
@@ -23,7 +23,7 @@ Screen-Off-TV-0.1.2.apk
 96860596bfaec0f69f3f98f5f73f2b96d6f0fea57abe067cbed5d58ff5244fd4
 ```
 
-Screen Off TV hiện là bản thử nghiệm ký bằng Android debug key. Tác giả fork Shizuku đang tạm ngừng bảo trì; kiểm tra lại [repo nguồn](https://github.com/thedjchi/Shizuku) trước lần nâng cấp sau. Thông tin APK/chữ ký cho agent nằm trong [install-profile.json](install-profile.json).
+Screen Off TV hiện là bản thử nghiệm ký bằng Android debug key. Tác giả fork Shizuku đang tạm ngừng bảo trì; kiểm tra lại [repo nguồn](https://github.com/thedjchi/Shizuku) trước lần nâng cấp sau. Thông tin phiên bản APK và chữ ký nằm trong [install-profile.json](install-profile.json).
 
 ## 2. Bật chế độ nhà phát triển và gỡ lỗi
 
@@ -65,7 +65,7 @@ Mở Shizuku từ màn hình ứng dụng; nếu không thấy biểu tượng, 
 
 ![Hộp hướng dẫn ghép đôi trên TV: vào Tùy chọn nhà phát triển](images/install/11-shizuku-pairing.png)
 
-Nếu TV quay về hộp hướng dẫn trước khi mở được mã, thử làm bước này trực tiếp bằng remote. Khi agent chụp, tránh `uiautomator dump` trong lúc Shizuku nhận mã: phiên UiAutomation có thể làm gián đoạn việc nhận mã. Dùng ảnh màn hình và phím điều hướng trong giai đoạn này.
+Nếu TV quay về hộp hướng dẫn trước khi mở được mã, thử làm bước này trực tiếp bằng remote. Nếu dùng công cụ tự động, tránh `uiautomator dump` trong lúc Shizuku nhận mã: phiên UiAutomation có thể làm gián đoạn việc nhận mã. Dùng ảnh màn hình và phím điều hướng trong giai đoạn này.
 
 **Dự phòng khởi động bằng PC:** trong Shizuku chọn **Bắt đầu bằng cách kết nối với máy tính → Xem lệnh**, chạy đúng lệnh app hiển thị qua kết nối đã cho phép. Đường dẫn thay đổi khi cài lại nên không chép cố định từ TV khác. Cách này dùng được để tiếp tục cài đặt; muốn tự chạy sau reboot vẫn phải hoàn tất cấu hình ghép đôi/khởi động không dây.
 
@@ -124,7 +124,7 @@ Vào **Cài đặt** của Screen Off TV và xác nhận:
 
 ## 8. Đổi sang nút RED màu đỏ — tùy chọn
 
-Mặc định dự án vẫn là **Mute, nhấn hai lần**. Nếu remote có nút màu đỏ và bạn muốn đổi:
+Phím tắt mặc định là **Mute, nhấn hai lần**. Nếu remote có nút màu đỏ và bạn muốn đổi:
 
 1. Bật dịch vụ, mở **Cài đặt → Phím điều khiển → Nhận một phím khác từ remote**.
 2. Nhấn **một lần nút RED thật** khi app đang chờ. Không chọn Nguồn, OK, Back hay mũi tên.
@@ -132,27 +132,27 @@ Mặc định dự án vẫn là **Mute, nhấn hai lần**. Nếu remote có n�
 4. Giữ **Thao tác → Nhấn 2 lần**. Vào **Kiểm tra phím remote**, nhấn RED một lần để kiểm tra nhận tín hiệu trước.
 5. Nếu không nhận được nút, giữ Mute. Muốn trở lại mặc định, chọn Mute trong danh sách.
 
-Phần RED là hướng dẫn thao tác, chưa được thử bằng nút RED thật trong buổi cài này nên chưa có ảnh minh họa. Sự kiện phím giả từ ADB không chứng minh nút vật lý được nhận đúng.
+Chưa thử nút RED trên remote thật nên chưa có ảnh minh họa. Phím gửi qua ADB có thể cho kết quả khác với phím trên remote.
 
 ## 9. Thử tắt hình và tự khởi động
 
 **Thử nghe nhạc/phim:** mở bài nhạc/video và xác nhận đang có tiếng. Dùng thao tác đã chọn (mặc định nhấn Mute hai lần nhanh) để tắt hình, kiểm tra âm thanh còn phát, dùng lại thao tác để bật hình. Phím vẫn giữ chức năng gốc của TV nên hãy thử trước. Nếu không bật lại được hình, dùng remote để đánh thức TV; đừng thử tiếp khi chưa có cách khôi phục. Ghi tên/phiên bản trình phát và chế độ đã thử. Ảnh ADB có thể vẫn có hình khi panel tắt, nên kiểm tra panel thật bằng mắt hoặc camera.
 
-**Thử tự chạy:** khởi động lại TV bằng menu hệ thống, chờ Wi-Fi và Shizuku. Trước khi mở app/bấm Bật dịch vụ, kiểm tra dịch vụ bằng agent hoặc thử phím remote. Sau đó mở app xem trạng thái. Nếu cần mở app mới chạy thì ghi là chưa tự chạy hoàn chỉnh.
+**Thử tự chạy:** khởi động lại TV bằng menu hệ thống, chờ Wi-Fi và Shizuku. Trước khi mở app/bấm Bật dịch vụ, kiểm tra dịch vụ qua ADB hoặc thử phím remote. Sau đó mở app xem trạng thái. Nếu cần mở app mới chạy thì ghi là chưa tự chạy hoàn chỉnh.
 
 ![Screen Off TV sẵn sàng sau reboot thử nghiệm](images/install/25-reboot-second-ready.png)
 
-Kết quả ngày 25/10/2026: đã reboot hai lần. Lần 2 xác nhận `shizuku_server` và dịch vụ foreground của Screen Off TV chạy **trước khi mở app**; Android ghi nguồn khởi động `BOOT_COMPLETED`. Ảnh trên chụp sau kiểm tra đó. Đây là kết quả trên TV thử nghiệm, không bảo đảm mọi firmware. Chưa thử nhạc/phim với trình phát cụ thể hoặc nút RED thật trong buổi này.
+Kết quả ngày 25/10/2026: đã reboot hai lần. Lần 2 xác nhận `shizuku_server` và dịch vụ foreground của Screen Off TV chạy **trước khi mở app**; Android ghi nguồn khởi động `BOOT_COMPLETED`. Ảnh trên chụp sau kiểm tra đó. Kết quả áp dụng cho TV và firmware đã thử. Chưa thử nhạc/phim với trình phát cụ thể hoặc nút RED trên remote thật.
 
 ## 10. Xử lý lỗi nhanh
 
 | Hiện tượng | Cách xử lý |
 |---|---|
-| Không có Wireless debugging | Dùng lệnh PC trong Shizuku; không khẳng định TV đó hỗ trợ tự chạy không root. |
+| Không có Wireless debugging | Dùng lệnh PC trong Shizuku; Cần thử khởi động lại để kiểm tra khả năng tự chạy. |
 | Shizuku không nhận mã | Quay lại Ghép nối, mở mã mới bằng remote; giữ mạng Wi-Fi, tránh công cụ UiAutomation đang chạy. |
 | Screen Off TV chưa được cấp quyền | Bật dịch vụ, chọn Cho phép mọi lúc trong Shizuku; nếu đã từ chối, mở danh sách app được ủy quyền trong Shizuku. |
 | Shizuku chạy nhưng app chưa sẵn sàng sau boot | Chờ Shizuku sẵn sàng rồi bật lại dịch vụ; ghi kết quả tự chạy chưa đạt. |
-| Phim/nhạc dừng khi tắt hình | Thử chế độ còn lại khi dịch vụ đã dừng, kiểm tra trình phát và khôi phục hình; không coi mọi player đều tương thích. |
+| Phim/nhạc dừng khi tắt hình | Thử chế độ còn lại khi dịch vụ đã dừng, kiểm tra trình phát và khôi phục hình; Khả năng tiếp tục phát tùy thuộc trình phát. |
 
 ## Nguồn và dữ liệu kiểm tra
 

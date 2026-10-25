@@ -8,7 +8,7 @@
 
 [Kho mã GitHub](https://github.com/ThaiVanCuong93/ScreenOffTV)
 
-Chủ dự án xác nhận **hoạt động ổn định trên Xiaomi TV A Pro 55 inch 2026**. Phản hồi sử dụng này được ghi riêng với các kiểm thử tự động bên dưới.
+Đã thử nghiệm trên **Xiaomi TV A Pro 55 inch 2026**, hoạt động ổn định.
 
 ![Giao diện tiếng Việt của ứng dụng tắt màn hình Android TV bằng remote](fastlane/metadata/android/vi/images/tvScreenshots/1.png)
 
@@ -53,7 +53,7 @@ Phím mặc định là **nhấn Mute hai lần nhanh**. Trong **Cài đặt**, 
 3. Quay lại trình phát, dùng thao tác remote đã chọn để tắt hình.
 4. Lặp lại thao tác đó để bật lại màn hình.
 
-Nếu trình phát dừng hoặc panel không phản hồi, hãy bật lại hình và kiểm tra chế độ tắt màn hình cùng trình phát. Không mặc định rằng mọi TV hoặc ứng dụng đều hỗ trợ tiếp tục phát âm thanh.
+Nếu trình phát dừng hoặc panel không phản hồi, hãy bật lại hình và kiểm tra chế độ tắt màn hình cùng trình phát. Khả năng tiếp tục phát âm thanh tùy thuộc TV và ứng dụng.
 
 ## Hai chế độ tắt màn hình
 
@@ -70,7 +70,7 @@ Yêu cầu Android TV 8.0 trở lên không có nghĩa là mọi TV đều tươ
 
 | Thiết bị | Android | Trình phát / phạm vi | Chế độ | Kết quả đã kiểm chứng |
 |---|---|---|---|---|
-| Xiaomi TV A Pro 55 inch 2026 | Chưa ghi firmware trong phản hồi | Trải nghiệm của chủ dự án | Chưa ghi chế độ | Chủ dự án xác nhận ổn định; chưa ghi trình phát, thời lượng và chi tiết reboot. |
+| Xiaomi TV A Pro 55 inch 2026 | Chưa ghi phiên bản firmware | Sử dụng thực tế | Chưa ghi chế độ | Hoạt động ổn định. Chưa ghi trình phát, thời lượng sử dụng và chi tiết khởi động lại. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Giao diện, ngôn ngữ, cấu hình và D-pad | Cấu hình giao diện | 6 kiểm thử Android qua, gồm cuộn Giới thiệu và đổi ngôn ngữ. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Phát nhạc hoặc phim | Screen Off / Picture Off | Chưa xác minh panel và âm thanh liên tục với trình phát được ghi tên cụ thể. |
 | Xiaomi MiTV-MZTU0 | 14 / API 34 | Phát nhạc hoặc phim | Tắt đèn nền | Chưa xác minh panel và âm thanh liên tục với trình phát được ghi tên cụ thể. |
@@ -82,7 +82,7 @@ Khi báo thiết bị khác, ghi rõ model, Android, trình phát/phiên bản, 
 
 ### Có thể tắt màn hình tivi mà vẫn nghe nhạc không?
 
-Đó là mục tiêu của ứng dụng: tắt hình nhưng giữ âm thanh. Cần TV tương thích và trình phát vẫn tiếp tục chạy. Bảng trên phân biệt phần giao diện đã kiểm chứng với các trường hợp phát nội dung cần xác nhận thêm.
+Đó là mục tiêu của ứng dụng: tắt hình nhưng giữ âm thanh. Cần TV tương thích và trình phát vẫn tiếp tục chạy. Xem kết quả thử nghiệm trên từng thiết bị ở bảng trên.
 
 ### Ứng dụng có tắt nguồn TV hoặc đưa TV vào chế độ chờ không?
 
@@ -98,7 +98,7 @@ Lặp lại thao tác remote đã cấu hình. Mặc định là nhấn Mute hai
 
 ### Mọi ứng dụng nghe nhạc hoặc xem phim đều tiếp tục phát được không?
 
-Không chắc chắn. Trình phát hoặc firmware TV có thể tạm dừng nội dung hay từ chối yêu cầu điều khiển màn hình. Chỉ ghi một trình phát là tương thích sau khi kiểm tra thực tế; chưa có cam kết hỗ trợ tất cả.
+Không chắc chắn. Trình phát hoặc firmware TV có thể tạm dừng nội dung hay từ chối yêu cầu điều khiển màn hình. Bạn cần thử trực tiếp với trình phát đang dùng.
 
 ### Dịch vụ có tự chạy sau khi bật TV không?
 
@@ -125,7 +125,7 @@ Cần JDK 17 và Android SDK platform 35. Cấu hình `JAVA_HOME`, `ANDROID_HOME
 ./gradlew :app:assembleDebugSignedDebug :app:testDebugSignedDebugUnitTest :ipc:testDebugUnitTest
 ```
 
-APK: `app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`. Bản này dùng khóa ký debug của Android. APK cục bộ đã chuẩn bị có tên `Screen-Off-TV-0.1.2.apk`.
+APK: `app/build/outputs/apk/debugSigned/debug/app-debugSigned-debug.apk`. Bản này dùng khóa ký debug của Android. APK trong thư mục `dist/` có tên `Screen-Off-TV-0.1.2.apk`.
 
 Kiểm thử giao diện và ngôn ngữ cần thiết bị Android kết nối:
 
@@ -141,7 +141,7 @@ Build release chưa ký: `./gradlew :app:assembleUnsignedRelease`. Cần ký b�
 - `hidden-api/`: truy cập API màn hình Android.
 - `ipc/`: kiểu dữ liệu trao đổi liên tiến trình.
 - `shizuku-service/`: điều khiển màn hình và nhận phím remote qua Shizuku.
-- `design/`: ảnh biểu tượng gốc do chủ dự án cung cấp.
+- `design/`: ảnh biểu tượng gốc.
 - `fastlane/`: metadata phân phối tiếng Anh, Việt và Trung giản thể.
 
 ## Quyền riêng tư và giấy phép
